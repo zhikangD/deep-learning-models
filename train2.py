@@ -129,3 +129,6 @@ def main(args=None):
 
     print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
     model.save()
+
+if __name__ == '__main__':
+    main()
