@@ -14,6 +14,9 @@ from keras.utils import np_utils
 from keras.callbacks import ModelCheckpoint
 from sklearn.utils import shuffle
 from sklearn.cross_validation import train_test_split
+from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
+from keras import backend as K
+
 
 def parse_args(args):
     parser = argparse.ArgumentParser(description='training script')
@@ -22,6 +25,26 @@ def parse_args(args):
     parser.add_argument('--usepkldata',action='store_true', help='use data from saved pickle file or create from image.')
     return parser.parse_args(args)
 
+def f1_score(y_true, y_pred):
+
+    # Count positive samples.
+    c1 = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+    c2 = K.sum(K.round(K.clip(y_pred, 0, 1)))
+    c3 = K.sum(K.round(K.clip(y_true, 0, 1)))
+
+    # If there are no true samples, fix the F1 score at 0.
+    if c3 == 0:
+        return 0
+
+    # How many selected items are relevant?
+    precision = c1 / c2
+
+    # How many relevant items are selected?
+    recall = c1 / c3
+
+    # Calculate f1_score
+    f1_score = 2 * (precision * recall) / (precision + recall)
+    return f1_score
 
 def main(args=None):
     # parse arguments
@@ -82,7 +105,7 @@ def main(args=None):
     custom_resnet_model.summary()
     for layer in custom_resnet_model.layers[:-1]:
         layer.trainable = False
-    custom_resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    custom_resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy', f1_score])
     t = time.time()
     filepath = "./weights-improvement-{epoch:02d}-{val_acc:.2f}.h5"
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
