@@ -47,7 +47,7 @@ def cnnmodel():
 
     model.add(Convolution2D(nb_filters, (nb_conv, nb_conv),
                             border_mode='valid',
-                            input_shape=(1, img_rows, img_cols), data_format='channels_first'))
+                            input_shape=( img_rows, img_cols,3)))
     convout1 = Activation('relu')
     model.add(convout1)
     model.add(Convolution2D(nb_filters, (nb_conv, nb_conv)))
@@ -69,21 +69,20 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
     args = parse_args(args)
-    data_path = args.data_dir
-    data_dir_list = os.listdir(data_path)
     img_data_list = []
-    if args.usepkldata==False:
-        for dataset in data_dir_list:
-            img_list = os.listdir(data_path + '/' + dataset)
-            print('Loaded the images of dataset-' + '{}\n'.format(dataset))
-            for img in img_list:
-                img_path = data_path + '/' + dataset + '/' + img
-                img = image.load_img(img_path, target_size=(96, 96))
-                x = image.img_to_array(img)
-                x = np.expand_dims(x, axis=0)
-                x = preprocess_input(x)
-                print('Input image shape:', x.shape)
-                img_data_list.append(x)
+    img_data_list = []
+    if args.usepkldata == False:
+        with open('./data/img_list.pkl', 'rb') as pk:
+            img_list = _pickle.load(pk)
+        for img in img_list:
+            # img_path = data_path + '/' + dataset + '/' + img
+            img_path = args.data_dir + '/' + img + '.jpg'
+            img = image.load_img(img_path, target_size=(96, 96))
+            x = image.img_to_array(img)
+            x = np.expand_dims(x, axis=0)
+            x = preprocess_input(x)
+            print('Input image shape:', x.shape)
+            img_data_list.append(x)
         img_data = np.array(img_data_list)
         # img_data = img_data.astype('float32')
         print(img_data.shape)
