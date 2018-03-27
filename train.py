@@ -29,6 +29,7 @@ def parse_args(args):
     parser.add_argument('--usepkldata',action='store_true', help='use data from saved pickle file or create from image.')
     parser.add_argument('--model', default='resnet')
     parser.add_argument('--batch_size', default=10)
+    parser.add_argument('--object', default='focus')
     return parser.parse_args(args)
 
 def f1_score(y_true, y_pred):
@@ -107,8 +108,12 @@ def main(args=None):
 
     num_classes = 2
     num_of_samples = img_data.shape[0]
-    with open('./data/focus.pkl', 'rb') as pk:
-        labels = _pickle.load(pk)
+    if args.object =='focus':
+        with open('./data/focus.pkl', 'rb') as pk:
+            labels = _pickle.load(pk)
+    elif args.object == 'quality':
+        with open('./data/quality.pkl', 'rb') as pk:
+            labels = _pickle.load(pk)
 
     names = ['bad', 'good']
     # convert class labels to on-hot encoding
@@ -133,7 +138,7 @@ def main(args=None):
             layer.trainable = False
         custom_resnet_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
         t = time.time()
-        filepath = "./data/resnet-improvement-{epoch:02d}-{val_acc:.2f}.h5"
+        filepath = "./data/resnet-"+str(args.object)+"-{epoch:02d}-{val_acc:.2f}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         callbacks_list = [checkpoint]
         hist = custom_resnet_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
@@ -160,7 +165,7 @@ def main(args=None):
         for layer in custom_vgg_model.layers[:-1]:
             layer.trainable = False
 
-        filepath = "./data/vgg16-improvement-{epoch:02d}-{val_acc:.2f}.h5"
+        filepath = "./data/vgg16-"+str(args.object)+"-{epoch:02d}-{val_acc:.2f}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         callbacks_list = [checkpoint]
 
@@ -187,7 +192,7 @@ def main(args=None):
         custom_model.summary()
         for layer in custom_model.layers[:-1]:
             layer.trainable = False
-        filepath = "./data/blurmapping-improvement-{epoch:02d}-{val_acc:.2f}.h5"
+        filepath = "./data/blurmapping-"+str(args.object)+"-{epoch:02d}-{val_acc:.2f}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         callbacks_list = [checkpoint]
 
