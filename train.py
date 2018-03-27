@@ -158,9 +158,9 @@ def main(args=None):
         # Training the classifier alone
         # image_input = Input(shape=(224, 224, 3))
 
-        vgg_model = VGG16( include_top=False, weights='imagenet')
-        for layer in vgg_model.layers[:-1]:
-            layer.trainable = False
+        vgg_model = VGG16( include_top=True, weights='imagenet')
+        # for layer in vgg_model.layers[:-1]:
+        #     layer.trainable = False
         inp = Input(shape=(64, 64, 3), name='input_image')
         output_vgg_conv = vgg_model(inp)
         x_1 = Flatten(name='flatten')(output_vgg_conv)
@@ -173,7 +173,7 @@ def main(args=None):
         x_1 = Dense(1, activation='sigmoid', name='frontalpred')(x_1)
 
         x_1= Dense(num_classes, activation='sigmoid', name='output')(x_1)
-        custom_vgg_model = Model(Input=inp, outputs=x_1)
+        custom_vgg_model = Model(input=inp, outputs=x_1)
         custom_vgg_model.summary()
 
 
