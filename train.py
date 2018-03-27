@@ -170,9 +170,7 @@ def main(args=None):
         x_1 = Dropout(0.25)(x_1)
         x_1 = Dense(64, activation='relu', name='fc3')(x_1)
         x_1 = Dropout(0.125)(x_1)
-        x_1 = Dense(1, activation='sigmoid', name='frontalpred')(x_1)
-
-        x_1= Dense(num_classes, activation='sigmoid', name='output')(x_1)
+        x_1 = Dense(2, activation='sigmoid', name='frontalpred')(x_1)
         custom_vgg_model = Model(input=inp, output=x_1)
         custom_vgg_model.summary()
 
