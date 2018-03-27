@@ -13,6 +13,7 @@ from keras.layers import Input
 from keras.models import Model
 from keras.utils import np_utils
 from keras.callbacks import ModelCheckpoint
+from keras import metrics
 from sklearn.utils import shuffle
 from sklearn.cross_validation import train_test_split
 from blurMapping import KitModel
@@ -113,7 +114,7 @@ def main(args=None):
         custom_resnet_model.summary()
         for layer in custom_resnet_model.layers[:-1]:
             layer.trainable = False
-        custom_resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        custom_resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[metrics.categorical_accuracy,'accuracy'])
         t = time.time()
         filepath = "./data/resnet-improvement-{epoch:02d}-{val_acc:.2f}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
