@@ -42,7 +42,7 @@ def set_layer_weights(model, weights_dict):
 def KitModel(weight_file = None):
     weights_dict = load_weights_from_file(weight_file) if not weight_file == None else None
         
-    data            = layers.Input(name = 'data', shape = (384, 384, 3,) )
+    data            = layers.Input(name = 'data', shape = (96, 96, 3,) )
     conv1_1_input   = layers.ZeroPadding2D(padding = ((1, 1), (1, 1)))(data)
     conv1_1         = convolution(weights_dict, name='conv1_1', input=conv1_1_input, group=1, conv_type='layers.Conv2D', filters=64, kernel_size=(3, 3), strides=(1, 1), dilation_rate=(1, 1), padding='valid', use_bias=True)
     relu1_1         = layers.Activation(name = 'relu1_1', activation = 'relu')(conv1_1)

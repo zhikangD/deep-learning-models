@@ -144,7 +144,8 @@ def main(args=None):
         Y = np_utils.to_categorical(labels, num_classes)
     else:
         model = model2(args.input_size)
-        Y = labels
+        Y = np_utils.to_categorical(labels, num_classes)
+        # Y = labels
 
     # Shuffle the dataset
     x, y = shuffle(img_data, Y, random_state=2)

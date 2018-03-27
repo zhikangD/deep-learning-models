@@ -73,7 +73,7 @@ def main(args=None):
         args = sys.argv[1:]
     args = parse_args(args)
     if args.model=='blurmapping':
-        t_size=384
+        t_size=96
     else:
         t_size=224
     # data_path = args.data_dir
@@ -126,7 +126,7 @@ def main(args=None):
         model.summary()
         last_layer = model.get_layer('avg_pool').output
         x = Flatten(name='flatten')(last_layer)
-        out = Dense(num_classes, activation='softmax', name='output_layer')(x)
+        out = Dense(num_classes, activation='sigmoid', name='output_layer')(x)
         custom_resnet_model = Model(inputs=image_input, outputs=out)
         custom_resnet_model.summary()
         for layer in custom_resnet_model.layers[:-1]:
@@ -153,7 +153,7 @@ def main(args=None):
         model.summary()
         last_layer = model.get_layer('fc2').output
         # x= Flatten(name='flatten')(last_layer)
-        out = Dense(num_classes, activation='softmax', name='output')(last_layer)
+        out = Dense(num_classes, activation='sigmoid', name='output')(last_layer)
         custom_vgg_model = Model(image_input, out)
         custom_vgg_model.summary()
 
@@ -180,11 +180,13 @@ def main(args=None):
         model.summary()
         last_layer = model.get_layer('conv5_blur_up').output
         x = Flatten(name='flatten')(last_layer)
-        out = Dense(num_classes, activation='softmax', name='output_layer')(x)
+        x = Dense(1024, activation='relu', name='fc_1')(x)
+        x = Dropout(0.5)(x)
+        out = Dense(num_classes, activation='sigmoid', name='output_layer')(x)
         custom_model = Model(inputs=model.input, outputs=out)
         custom_model.summary()
-        # for layer in custom_model.layers[:-1]:
-        #     layer.trainable = False
+        for layer in custom_model.layers[:-1]:
+            layer.trainable = False
         filepath = "./data/blurmapping-improvement-{epoch:02d}-{val_acc:.2f}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         callbacks_list = [checkpoint]
