@@ -17,8 +17,9 @@ from keras import metrics
 from sklearn.utils import shuffle
 from sklearn.cross_validation import train_test_split
 from blurMapping import KitModel
-from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
 from keras import backend as K
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
 
 
 def parse_args(args):
@@ -59,7 +60,13 @@ def f1_score(y_true, y_pred):
     recall = recall(y_true, y_pred)
     return 2*((precision*recall)/(precision+recall))
 
+def get_session():
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    return tf.Session(config=config)
+
 def main(args=None):
+    K.tensorflow_backend.set_session(get_session())
     # parse arguments
     if args is None:
         args = sys.argv[1:]
