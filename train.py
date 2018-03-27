@@ -75,6 +75,8 @@ def main(args=None):
     args = parse_args(args)
     if args.model=='blurmapping':
         t_size=96
+    elif args.model=='vgg':
+        t_size = 64
     else:
         t_size=224
     # data_path = args.data_dir
@@ -154,24 +156,27 @@ def main(args=None):
     elif args.model=='vgg':
         # Custom_vgg_model_1
         # Training the classifier alone
-        image_input = Input(shape=(224, 224, 3))
+        # image_input = Input(shape=(224, 224, 3))
 
-        model = VGG16(input_tensor=image_input, include_top=True, weights='imagenet')
-        model.summary()
-        last_layer = model.get_layer('fc1').output
-        x = Dense(64, activation='relu', name='fc1')(last_layer)
-        x = Dropout(0.5)(x)
-        x = Dense(128, activation='relu', name='fc2')(x)
-        x = Dropout(0.25)(x)
-        x = Dense(64, activation='relu', name='fc3')(x)
-        x = Dropout(0.125)(x)
-        # x= Flatten(name='flatten')(last_layer)
-        out = Dense(num_classes, activation='sigmoid', name='output')(x)
-        custom_vgg_model = Model(image_input, out)
+        vgg_model = VGG16( include_top=False, weights='imagenet')
+        for layer in vgg_model.layers[:-1]:
+            layer.trainable = False
+        inp = Input(shape=(64, 64, 3), name='input_image')
+        output_vgg_conv = vgg_model(inp)
+        x_1 = Flatten(name='flatten')(output_vgg_conv)
+        x_1 = Dense(64, activation='relu', name='fc1')(x_1)
+        x_1 = Dropout(0.5)(x_1)
+        x_1 = Dense(128, activation='relu', name='fc2')(x_1)
+        x_1 = Dropout(0.25)(x_1)
+        x_1 = Dense(64, activation='relu', name='fc3')(x_1)
+        x_1 = Dropout(0.125)(x_1)
+        x_1 = Dense(1, activation='sigmoid', name='frontalpred')(x_1)
+
+        x_1= Dense(num_classes, activation='sigmoid', name='output')(x_1)
+        custom_vgg_model = Model(Input=inp, outputs=x_1)
         custom_vgg_model.summary()
 
-        for layer in custom_vgg_model.layers[:-1]:
-            layer.trainable = False
+
 
         filepath = "./data/vgg16-"+str(args.object)+"-{epoch:02d}-{val_acc:.2f}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
