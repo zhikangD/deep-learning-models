@@ -29,26 +29,35 @@ def parse_args(args):
     parser.add_argument('--model', default='resnet')
     return parser.parse_args(args)
 
-# def f1_score(y_true, y_pred):
-#
-#     # Count positive samples.
-#     c1 = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-#     c2 = K.sum(K.round(K.clip(y_pred, 0, 1)))
-#     c3 = K.sum(K.round(K.clip(y_true, 0, 1)))
-#
-#     # If there are no true samples, fix the F1 score at 0.
-#     if c3 == 0:
-#         return 0
-#
-#     # How many selected items are relevant?
-#     precision = c1 / c2
-#
-#     # How many relevant items are selected?
-#     recall = c1 / c3
-#
-#     # Calculate f1_score
-#     f1_score = 2 * (precision * recall) / (precision + recall)
-#     return f1_score
+def f1_score(y_true, y_pred):
+    def recall(y_true, y_pred):
+        """Recall metric.
+
+        Only computes a batch-wise average of recall.
+
+        Computes the recall, a metric for multi-label classification of
+        how many relevant items are selected.
+        """
+        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+        possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
+        recall = true_positives / (possible_positives + K.epsilon())
+        return recall
+
+    def precision(y_true, y_pred):
+        """Precision metric.
+
+        Only computes a batch-wise average of precision.
+
+        Computes the precision, a metric for multi-label classification of
+        how many selected items are relevant.
+        """
+        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+        predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
+        precision = true_positives / (predicted_positives + K.epsilon())
+        return precision
+    precision = precision(y_true, y_pred)
+    recall = recall(y_true, y_pred)
+    return 2*((precision*recall)/(precision+recall))
 
 def main(args=None):
     # parse arguments
@@ -56,9 +65,9 @@ def main(args=None):
         args = sys.argv[1:]
     args = parse_args(args)
     if args.model=='blurmapping':
-        t_size=(384,384)
+        t_size=384
     else:
-        t_size=(224,224)
+        t_size=224
     # data_path = args.data_dir
     # data_dir_list = os.listdir(data_path)
     img_data_list = []
@@ -68,7 +77,7 @@ def main(args=None):
         for img in img_list:
             # img_path = data_path + '/' + dataset + '/' + img
             img_path = args.data_dir+'/'+img+'.jpg'
-            img = image.load_img(img_path, target_size=t_size)
+            img = image.load_img(img_path, target_size=(t_size,t_size))
             x = image.img_to_array(img)
             x = np.expand_dims(x, axis=0)
             x = preprocess_input(x)
@@ -81,10 +90,10 @@ def main(args=None):
         print(img_data.shape)
         img_data = img_data[0]
         print(img_data.shape)
-        with open('./data/img_data.pkl', 'wb') as pk:
+        with open('./data/img_data'+str(t_size)+'.pkl', 'wb') as pk:
             _pickle.dump(img_data, pk)
     else:
-        with open('./data/img_data.pkl', 'rb') as pk:
+        with open('./data/img_data'+str(t_size)+'.pkl', 'rb') as pk:
             img_data = _pickle.load(pk)
             print(img_data.shape)
 
@@ -114,7 +123,7 @@ def main(args=None):
         custom_resnet_model.summary()
         for layer in custom_resnet_model.layers[:-1]:
             layer.trainable = False
-        custom_resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[metrics.categorical_accuracy,'accuracy'])
+        custom_resnet_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
         t = time.time()
         filepath = "./data/resnet-improvement-{epoch:02d}-{val_acc:.2f}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
