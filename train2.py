@@ -78,7 +78,6 @@ def cnnmodel(size):
     model.add(Activation('relu'))
     model.add(Dropout(0.5))
     model.add(Dense(nb_classes))
-    model.add(Activation('softmax'))
     sgd = SGD(lr=0.1)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     return model

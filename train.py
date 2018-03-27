@@ -28,6 +28,7 @@ def parse_args(args):
     parser.add_argument('--epochs', help='Number of epochs to train.', type=int, default=20)
     parser.add_argument('--usepkldata',action='store_true', help='use data from saved pickle file or create from image.')
     parser.add_argument('--model', default='resnet')
+    parser.add_argument('--batch_size', default=10)
     return parser.parse_args(args)
 
 def f1_score(y_true, y_pred):
@@ -139,7 +140,7 @@ def main(args=None):
                                        validation_data=(X_test, y_test),
                                        callbacks=callbacks_list)
         print('Training time: %s' % (t - time.time()))
-        (loss, accuracy) = custom_resnet_model.evaluate(X_test, y_test, batch_size=10, verbose=1)
+        (loss, accuracy) = custom_resnet_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
 
         print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
     #########################################################################################
@@ -170,7 +171,7 @@ def main(args=None):
         hist = custom_vgg_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1, validation_data=(X_test, y_test),
                                     callbacks=callbacks_list)
         print('Training time: %s' % (t - time.time()))
-        (loss, accuracy) = custom_vgg_model.evaluate(X_test, y_test, batch_size=10, verbose=1)
+        (loss, accuracy) = custom_vgg_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
 
         print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
     elif args.model=='blurmapping':
@@ -196,7 +197,7 @@ def main(args=None):
                                     validation_data=(X_test, y_test),
                                     callbacks=callbacks_list)
         print('Training time: %s' % (t - time.time()))
-        (loss, accuracy) = custom_model.evaluate(X_test, y_test, batch_size=10, verbose=1)
+        (loss, accuracy) = custom_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
 
         print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
 
