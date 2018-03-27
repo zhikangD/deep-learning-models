@@ -131,6 +131,8 @@ def main(args=None):
         model.summary()
         last_layer = model.get_layer('avg_pool').output
         x = Flatten(name='flatten')(last_layer)
+        x = Dense(64, activation='relu', name='fc1')(x)
+        x = Dropout(0.5)(x)
         out = Dense(num_classes, activation='sigmoid', name='output_layer')(x)
         custom_resnet_model = Model(inputs=image_input, outputs=out)
         custom_resnet_model.summary()
@@ -156,9 +158,15 @@ def main(args=None):
 
         model = VGG16(input_tensor=image_input, include_top=True, weights='imagenet')
         model.summary()
-        last_layer = model.get_layer('fc2').output
+        last_layer = model.get_layer('fc1').output
+        x = Dense(64, activation='relu', name='fc1')(last_layer)
+        x = Dropout(0.5)(x)
+        x = Dense(128, activation='relu', name='fc2')(x)
+        x = Dropout(0.25)(x)
+        x = Dense(64, activation='relu', name='fc3')(x)
+        x = Dropout(0.125)(x)
         # x= Flatten(name='flatten')(last_layer)
-        out = Dense(num_classes, activation='sigmoid', name='output')(last_layer)
+        out = Dense(num_classes, activation='sigmoid', name='output')(x)
         custom_vgg_model = Model(image_input, out)
         custom_vgg_model.summary()
 
@@ -187,6 +195,8 @@ def main(args=None):
         x = Flatten(name='flatten')(last_layer)
         x = Dense(1024, activation='relu', name='fc_1')(x)
         x = Dropout(0.5)(x)
+        x = Dense(128, activation='relu', name='fc2')(x)
+        x = Dropout(0.25)(x)
         out = Dense(num_classes, activation='sigmoid', name='output_layer')(x)
         custom_model = Model(inputs=model.input, outputs=out)
         custom_model.summary()
