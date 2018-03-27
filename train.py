@@ -15,6 +15,7 @@ from keras.utils import np_utils
 from keras.callbacks import ModelCheckpoint
 from sklearn.utils import shuffle
 from sklearn.cross_validation import train_test_split
+from blurMapping import KitModel
 from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
 from keras import backend as K
 
@@ -53,6 +54,10 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
     args = parse_args(args)
+    if args.model=='blurmapping':
+        t_size=(384,384)
+    else:
+        t_size=(224,224)
     # data_path = args.data_dir
     # data_dir_list = os.listdir(data_path)
     img_data_list = []
@@ -62,7 +67,7 @@ def main(args=None):
         for img in img_list:
             # img_path = data_path + '/' + dataset + '/' + img
             img_path = args.data_dir+'/'+img+'.jpg'
-            img = image.load_img(img_path, target_size=(224, 224))
+            img = image.load_img(img_path, target_size=t_size)
             x = image.img_to_array(img)
             x = np.expand_dims(x, axis=0)
             x = preprocess_input(x)
@@ -151,6 +156,35 @@ def main(args=None):
         (loss, accuracy) = custom_vgg_model.evaluate(X_test, y_test, batch_size=10, verbose=1)
 
         print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
+    elif args.model=='blurmapping':
+        image_input = Input(shape=(384, 384, 3))
+        model = KitModel(weight_file='blurMapping.npy')
+        model.summary()
+        last_layer = model.get_layer('conv5_blur_up').output
+        x = Flatten(name='flatten')(last_layer)
+        out = Dense(num_classes, activation='softmax', name='output_layer')(x)
+        custom_model = Model(inputs=model.input, outputs=out)
+        custom_model.summary()
+        for layer in custom_model.layers[:-1]:
+            layer.trainable = False
+        filepath = "./data/blurmapping-improvement-{epoch:02d}-{val_acc:.2f}.h5"
+        checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+        callbacks_list = [checkpoint]
+
+        custom_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+
+        t = time.time()
+        #	t = now()
+        hist = custom_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
+                                    validation_data=(X_test, y_test),
+                                    callbacks=callbacks_list)
+        print('Training time: %s' % (t - time.time()))
+        (loss, accuracy) = custom_model.evaluate(X_test, y_test, batch_size=10, verbose=1)
+
+        print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
+
+
+# python3 train.py --data_dir=./data/img --model=blurmapping
 
 
 if __name__ == '__main__':
