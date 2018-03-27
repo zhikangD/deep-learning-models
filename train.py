@@ -158,7 +158,7 @@ def main(args=None):
         # Training the classifier alone
         # image_input = Input(shape=(224, 224, 3))
 
-        vgg_model = VGG16( include_top=True, weights='imagenet')
+        vgg_model = VGG16( include_top=False, weights='imagenet')
         for layer in vgg_model.layers[:-1]:
             layer.trainable = False
         inp = Input(shape=(64, 64, 3), name='input_image')
