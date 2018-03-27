@@ -113,7 +113,7 @@ def main(args=None):
         custom_resnet_model.summary()
         for layer in custom_resnet_model.layers[:-1]:
             layer.trainable = False
-        custom_resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy', f1_score])
+        custom_resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         t = time.time()
         filepath = "./data/resnet-improvement-{epoch:02d}-{val_acc:.2f}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
@@ -165,8 +165,8 @@ def main(args=None):
         out = Dense(num_classes, activation='softmax', name='output_layer')(x)
         custom_model = Model(inputs=model.input, outputs=out)
         custom_model.summary()
-        for layer in custom_model.layers[:-1]:
-            layer.trainable = False
+        # for layer in custom_model.layers[:-1]:
+        #     layer.trainable = False
         filepath = "./data/blurmapping-improvement-{epoch:02d}-{val_acc:.2f}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         callbacks_list = [checkpoint]
