@@ -19,6 +19,7 @@ from sklearn.cross_validation import train_test_split
 from blurMapping import KitModel
 from keras import backend as K
 import tensorflow as tf
+from sklearn.preprocessing import LabelEncoder
 from keras.backend.tensorflow_backend import set_session
 
 
@@ -119,9 +120,13 @@ def main(args=None):
 
     names = ['bad', 'good']
     # convert class labels to on-hot encoding
-    Y = np_utils.to_categorical(labels, num_classes)
+    # Y = np_utils.to_categorical(labels, num_classes)
+    Y = labels
+    encoder = LabelEncoder()
+    encoder.fit(Y)
+    encoded_Y = encoder.transform(Y)
     # Shuffle the dataset
-    x, y = shuffle(img_data, Y, random_state=2)
+    x, y = shuffle(img_data, encoded_Y, random_state=2)
     # Split the dataset
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
     ###########################################################################################################################
@@ -170,7 +175,7 @@ def main(args=None):
         x_1 = Dropout(0.25)(x_1)
         x_1 = Dense(64, activation='relu', name='fc3')(x_1)
         x_1 = Dropout(0.125)(x_1)
-        x_1 = Dense(2, activation='sigmoid', name='frontalpred')(x_1)
+        x_1 = Dense(1, activation='sigmoid', name='frontalpred')(x_1)
         custom_vgg_model = Model(input=inp, output=x_1)
         custom_vgg_model.summary()
 
@@ -180,7 +185,7 @@ def main(args=None):
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         callbacks_list = [checkpoint]
 
-        custom_vgg_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+        custom_vgg_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
         t = time.time()
         #	t = now()
