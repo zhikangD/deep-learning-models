@@ -162,7 +162,14 @@ def main(args=None):
         # Custom_vgg_model_1
         # Training the classifier alone
         # image_input = Input(shape=(224, 224, 3))
-
+        Y = labels
+        encoder = LabelEncoder()
+        encoder.fit(Y)
+        encoded_Y = encoder.transform(Y)
+        # Shuffle the dataset
+        x, y = shuffle(img_data, Y, random_state=2)
+        # Split the dataset
+        X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
         vgg_model = VGG16( include_top=False, weights='imagenet')
         for layer in vgg_model.layers[:-1]:
             layer.trainable = False
