@@ -76,7 +76,7 @@ def main(args=None):
     args = parse_args(args)
     if args.model=='blurmapping':
         t_size=96
-    elif args.model=='vgg':
+    elif args.model=='vgg16':
         t_size=64
     else:
         t_size=224
@@ -120,13 +120,13 @@ def main(args=None):
 
     names = ['bad', 'good']
     # convert class labels to on-hot encoding
-    # Y = np_utils.to_categorical(labels, num_classes)
-    Y = labels
-    encoder = LabelEncoder()
-    encoder.fit(Y)
-    encoded_Y = encoder.transform(Y)
+    Y = np_utils.to_categorical(labels, num_classes)
+    # Y = labels
+    # encoder = LabelEncoder()
+    # encoder.fit(Y)
+    # encoded_Y = encoder.transform(Y)
     # Shuffle the dataset
-    x, y = shuffle(img_data, encoded_Y, random_state=2)
+    x, y = shuffle(img_data, Y, random_state=2)
     # Split the dataset
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
     ###########################################################################################################################
@@ -138,14 +138,14 @@ def main(args=None):
         model.summary()
         last_layer = model.get_layer('avg_pool').output
         x = Flatten(name='flatten')(last_layer)
-        x = Dense(64, activation='relu', name='fc1')(x)
+        x = Dense(1000, activation='relu', name='fc1')(x)
         x = Dropout(0.5)(x)
-        out = Dense(num_classes, activation='sigmoid', name='output_layer')(x)
+        out = Dense(num_classes, activation='softmax', name='output_layer')(x)
         custom_resnet_model = Model(inputs=image_input, outputs=out)
         custom_resnet_model.summary()
         for layer in custom_resnet_model.layers[:-1]:
             layer.trainable = False
-        custom_resnet_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+        custom_resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         t = time.time()
         filepath = "./data/resnet-"+str(args.object)+"-{epoch:02d}-{val_acc:.2f}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
@@ -158,7 +158,7 @@ def main(args=None):
 
         print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
     #########################################################################################
-    elif args.model=='vgg':
+    elif args.model=='vgg16':
         # Custom_vgg_model_1
         # Training the classifier alone
         # image_input = Input(shape=(224, 224, 3))
@@ -196,7 +196,6 @@ def main(args=None):
 
         print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
     elif args.model=='blurmapping':
-        image_input = Input(shape=(384, 384, 3))
         model = KitModel(weight_file='blurMapping.npy')
         model.summary()
         last_layer = model.get_layer('conv5_blur_up').output
@@ -205,7 +204,7 @@ def main(args=None):
         x = Dropout(0.5)(x)
         x = Dense(128, activation='relu', name='fc2')(x)
         x = Dropout(0.25)(x)
-        out = Dense(num_classes, activation='sigmoid', name='output_layer')(x)
+        out = Dense(num_classes, activation='softmax', name='output_layer')(x)
         custom_model = Model(inputs=model.input, outputs=out)
         custom_model.summary()
         for layer in custom_model.layers[:-1]:
