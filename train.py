@@ -240,9 +240,12 @@ def main(args=None):
 
         t = time.time()
         #	t = now()
-        hist = custom_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
-                                    validation_data=(X_test, y_test),
-                                    callbacks=callbacks_list)
+        # hist = custom_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
+        #                             validation_data=(X_test, y_test),
+        #                             callbacks=callbacks_list)
+        Y = np_utils.to_categorical(labels, num_classes)
+        hist = custom_model.fit_generator(datagen.flow(img_data, Y, batch_size=32),callbacks=callbacks_list,
+                        steps_per_epoch=1000, epochs=50)
         print('Training time: %s' % (t - time.time()))
         (loss, accuracy) = custom_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
 
