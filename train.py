@@ -145,7 +145,7 @@ def main(args=None):
         custom_resnet_model.summary()
         for layer in custom_resnet_model.layers[:-1]:
             layer.trainable = False
-        custom_resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        custom_resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[f1_score])
         t = time.time()
         filepath = "./data/resnet-"+str(args.object)+"-{epoch:02d}-{val_acc:.2f}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
@@ -192,7 +192,7 @@ def main(args=None):
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         callbacks_list = [checkpoint]
 
-        custom_vgg_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+        custom_vgg_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[f1_score])
 
         t = time.time()
         #	t = now()
@@ -220,7 +220,7 @@ def main(args=None):
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         callbacks_list = [checkpoint]
 
-        custom_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+        custom_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=[f1_score])
 
         t = time.time()
         #	t = now()
