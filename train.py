@@ -167,7 +167,7 @@ def main(args=None):
         encoder.fit(Y)
         encoded_Y = encoder.transform(Y)
         # Shuffle the dataset
-        x, y = shuffle(img_data, Y, random_state=2)
+        x, y = shuffle(img_data, encoded_Y, random_state=2)
         # Split the dataset
         X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
         vgg_model = VGG16( include_top=False, weights='imagenet')
