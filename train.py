@@ -236,7 +236,7 @@ def main(args=None):
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         callbacks_list = [checkpoint]
 
-        custom_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[f1_score,'accuracy'])
+        custom_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
         t = time.time()
         #	t = now()
