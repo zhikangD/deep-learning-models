@@ -192,11 +192,11 @@ def main(args=None):
         inp = Input(shape=(64, 64, 3), name='input_image')
         output_vgg_conv = vgg_model(inp)
         x_1 = Flatten(name='flatten')(output_vgg_conv)
-        x_1 = Dense(64, activation='relu', name='fc1')(x_1)
+        x_1 = Dense(512, activation='relu', name='fc1')(x_1)
         x_1 = Dropout(0.5)(x_1)
         x_1 = Dense(128, activation='relu', name='fc2')(x_1)
         x_1 = Dropout(0.25)(x_1)
-        x_1 = Dense(64, activation='relu', name='fc3')(x_1)
+        x_1 = Dense(8, activation='relu', name='fc3')(x_1)
         x_1 = Dropout(0.125)(x_1)
         x_1 = Dense(1, activation='sigmoid', name='frontalpred')(x_1)
         custom_vgg_model = Model(input=inp, output=x_1)
@@ -221,7 +221,7 @@ def main(args=None):
     elif args.model=='blurmapping':
         model = KitModel(weight_file='blurMapping.npy')
         model.summary()
-        last_layer = model.get_layer('conv5_blur_up').output
+        last_layer = model.get_layer('relu5_3').output
         x = Flatten(name='flatten')(last_layer)
         x = Dense(1024, activation='relu', name='fc_1')(x)
         x = Dropout(0.5)(x)
