@@ -158,10 +158,10 @@ def main(args=None):
         custom_resnet_model.summary()
         for layer in custom_resnet_model.layers[:-1]:
             layer.trainable = False
-        custom_resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[f1_score,'accuracy'])
+        custom_resnet_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         t = time.time()
         filepath = "./data/resnet-"+str(args.object)+"-{epoch:02d}-{val_acc:.2f}.h5"
-        checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+        checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=False, mode='max')
         callbacks_list = [checkpoint]
         # hist = custom_resnet_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
         #                                validation_data=(X_test, y_test),
@@ -208,7 +208,7 @@ def main(args=None):
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         callbacks_list = [checkpoint]
 
-        custom_vgg_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[f1_score,'accuracy'])
+        custom_vgg_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
         t = time.time()
         #	t = now()
@@ -225,8 +225,8 @@ def main(args=None):
         x = Flatten(name='flatten')(last_layer)
         x = Dense(128, activation='relu', name='fc_1')(x)
         x = Dropout(0.5)(x)
-        # x = Dense(128, activation='relu', name='fc2')(x)
-        # x = Dropout(0.25)(x)
+        x = Dense(128, activation='relu', name='fc2')(x)
+        x = Dropout(0.25)(x)
         out = Dense(num_classes, activation='softmax', name='output_layer')(x)
         custom_model = Model(inputs=model.input, outputs=out)
         custom_model.summary()
