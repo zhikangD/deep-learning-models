@@ -223,10 +223,10 @@ def main(args=None):
         model.summary()
         last_layer = model.get_layer('relu5_3').output
         x = Flatten(name='flatten')(last_layer)
-        x = Dense(1024, activation='relu', name='fc_1')(x)
+        x = Dense(128, activation='relu', name='fc_1')(x)
         x = Dropout(0.5)(x)
-        x = Dense(128, activation='relu', name='fc2')(x)
-        x = Dropout(0.25)(x)
+        # x = Dense(128, activation='relu', name='fc2')(x)
+        # x = Dropout(0.25)(x)
         out = Dense(num_classes, activation='softmax', name='output_layer')(x)
         custom_model = Model(inputs=model.input, outputs=out)
         custom_model.summary()
