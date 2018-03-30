@@ -223,17 +223,17 @@ def main(args=None):
         model.summary()
         last_layer = model.get_layer('relu5_3').output
         x = Flatten(name='flatten')(last_layer)
-        x = Dense(128, activation='relu', name='fc_1')(x)
+        x = Dense(512, activation='relu', name='fc_1')(x)
         x = Dropout(0.5)(x)
         x = Dense(128, activation='relu', name='fc2')(x)
         x = Dropout(0.25)(x)
-        out = Dense(num_classes, activation='softmax', name='output_layer')(x)
+        out = Dense(num_classes, activation='sigmoid', name='output_layer')(x)
         custom_model = Model(inputs=model.input, outputs=out)
         custom_model.summary()
         for layer in custom_model.layers[:-1]:
             layer.trainable = False
         filepath = "./data/blurmapping-"+str(args.object)+"-{epoch:02d}-{val_acc:.2f}.h5"
-        checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+        checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=False, mode='max')
         callbacks_list = [checkpoint]
 
         custom_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
