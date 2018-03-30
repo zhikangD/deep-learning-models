@@ -109,8 +109,8 @@ def main(args=None):
         print(img_data.shape)
         img_data = img_data[0]
         print(img_data.shape)
-        with open('./data/img_data'+str(t_size)+'.pkl', 'wb') as pk:
-            _pickle.dump(img_data, pk)
+        # with open('./data/img_data'+str(t_size)+'.pkl', 'wb') as pk:
+        #     _pickle.dump(img_data, pk)
     else:
         with open('./data/img_data'+str(t_size)+'.pkl', 'rb') as pk:
             img_data = _pickle.load(pk)
