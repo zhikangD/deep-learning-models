@@ -121,14 +121,7 @@ def main(args=None):
         with open('./data/quality.pkl', 'rb') as pk:
             labels = _pickle.load(pk)
 
-    datagen = ImageDataGenerator(
-        featurewise_center=True,
-        featurewise_std_normalization=True,
-        rotation_range=20,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        horizontal_flip=True)
-    datagen.fit(img_data)
+
 
 
     names = ['bad', 'good']
@@ -163,12 +156,11 @@ def main(args=None):
         filepath = "./data/resnet-"+str(args.object)+"-{epoch:02d}-{val_acc:.2f}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=False, mode='max')
         callbacks_list = [checkpoint]
-        # hist = custom_resnet_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
-        #                                validation_data=(X_test, y_test),
-        #                                callbacks=callbacks_list)
+        hist = custom_resnet_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
+                                       validation_data=(X_test, y_test),
+                                       callbacks=callbacks_list)
         Y = np_utils.to_categorical(labels, num_classes)
-        hist = custom_resnet_model.fit_generator(datagen.flow(img_data, Y, batch_size=32),callbacks=callbacks_list,
-                        steps_per_epoch=len(img_data) / 32, epochs=1000)
+
         print('Training time: %s' % (t - time.time()))
         (loss, accuracy) = custom_resnet_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
 
@@ -218,7 +210,17 @@ def main(args=None):
         (loss, accuracy) = custom_vgg_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
 
         print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
+        ##############################################################################
     elif args.model=='blurmapping':
+        datagen = ImageDataGenerator(
+            featurewise_center=True,
+            featurewise_std_normalization=True,
+            rotation_range=20,
+            width_shift_range=0.2,
+            height_shift_range=0.2,
+            horizontal_flip=True)
+        datagen.fit(img_data)
+
         model = KitModel(weight_file='blurMapping.npy')
         model.summary()
         last_layer = model.get_layer('relu5_3').output
@@ -233,19 +235,19 @@ def main(args=None):
         for layer in custom_model.layers[:-1]:
             layer.trainable = False
         filepath = "./data/blurmapping-"+str(args.object)+"-{epoch:02d}-{val_acc:.2f}.h5"
-        checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=False, mode='max')
+        checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=False)
         callbacks_list = [checkpoint]
 
         custom_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
         t = time.time()
         #	t = now()
-        hist = custom_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
-                                    validation_data=(X_test, y_test),
-                                    callbacks=callbacks_list)
+        # hist = custom_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
+        #                             validation_data=(X_test, y_test),
+        #                             callbacks=callbacks_list)
         # Y = np_utils.to_categorical(labels, num_classes)
-        # hist = custom_model.fit_generator(datagen.flow(img_data, Y, batch_size=args.batch_size),callbacks=callbacks_list,
-        #                 steps_per_epoch=1000, epochs=50)
+        hist = custom_model.fit_generator(datagen.flow(img_data, Y, batch_size=32),callbacks=callbacks_list,
+                        steps_per_epoch=len(img_data) / 32, epochs=1000)
         print('Training time: %s' % (t - time.time()))
         (loss, accuracy) = custom_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
 
