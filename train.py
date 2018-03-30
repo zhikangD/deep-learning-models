@@ -89,6 +89,8 @@ def main(args=None):
     if args.usepkldata==False:
         with open('./data/img_list.pkl', 'rb') as pk:
             img_list = _pickle.load(pk)
+        if args.model=='resnet_tuning':
+            img_list=img_list[0:10000]
         for img in img_list:
             # img_path = data_path + '/' + dataset + '/' + img
             img_path = args.data_dir+'/'+img+'.jpg'
@@ -250,6 +252,44 @@ def main(args=None):
                         steps_per_epoch=1000, epochs=50)
         print('Training time: %s' % (t - time.time()))
         (loss, accuracy) = custom_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
+
+        print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
+    elif args.model=='resnet_tuning':
+        # Fine tune the resnet 50
+        # image_input = Input(shape=(224, 224, 3))
+        model = ResNet50(weights='imagenet', include_top=False)
+        model.summary()
+        last_layer = model.output
+        # add a global spatial average pooling layer
+        x = GlobalAveragePooling2D()(last_layer)
+        # add fully-connected & dropout layers
+        x = Dense(512, activation='relu', name='fc-1')(x)
+        x = Dropout(0.5)(x)
+        x = Dense(256, activation='relu', name='fc-2')(x)
+        x = Dropout(0.5)(x)
+        # a softmax layer for 4 classes
+        out = Dense(2, activation='softmax', name='output_layer')(x)
+
+        # this is the model we will train
+        custom_resnet_model2 = Model(inputs=model.input, outputs=out)
+
+        custom_resnet_model2.summary()
+
+        for layer in custom_resnet_model2.layers[:-6]:
+            layer.trainable = False
+
+        # custom_resnet_model2.layers[-1].trainable
+        filepath = "./data/resnet2-" + str(args.object) + "-{epoch:02d}.h5"
+        checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=False)
+        callbacks_list = [checkpoint]
+        custom_resnet_model2.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+        t = time.time()
+
+        hist = custom_resnet_model2.fit(X_train, y_train, batch_size=32, epochs=12, verbose=1,
+                                        validation_data=(X_test, y_test), callbacks=callbacks_list)
+        print('Training time: %s' % (t - time.time()))
+        (loss, accuracy) = custom_resnet_model2.evaluate(X_test, y_test, batch_size=10, verbose=1)
 
         print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
 
