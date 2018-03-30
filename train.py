@@ -90,8 +90,8 @@ def main(args=None):
         with open('./data/img_list.pkl', 'rb') as pk:
             img_list = _pickle.load(pk)
         print(len(img_list))
-        if args.model=='resnet_tuning':
-            img_list=img_list[0:10000]
+        # if args.model=='resnet_tuning':
+        img_list=img_list[0:7000]
         print(len(img_list))
         for img in img_list:
             # img_path = data_path + '/' + dataset + '/' + img
@@ -125,8 +125,8 @@ def main(args=None):
         with open('./data/quality.pkl', 'rb') as pk:
             labels = _pickle.load(pk)
 
-    if args.model=='resnet_tuning':
-        labels=labels[0:10000]
+    # if args.model=='resnet_tuning':
+    labels=labels[0:7000]
 
 
     names = ['bad', 'good']
@@ -217,14 +217,14 @@ def main(args=None):
         print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
         ##############################################################################
     elif args.model=='blurmapping':
-        datagen = ImageDataGenerator(
-            featurewise_center=True,
-            featurewise_std_normalization=True,
-            rotation_range=20,
-            width_shift_range=0.2,
-            height_shift_range=0.2,
-            horizontal_flip=True)
-        datagen.fit(img_data)
+        # datagen = ImageDataGenerator(
+        #     featurewise_center=True,
+        #     featurewise_std_normalization=True,
+        #     rotation_range=20,
+        #     width_shift_range=0.2,
+        #     height_shift_range=0.2,
+        #     horizontal_flip=True)
+        # datagen.fit(img_data)
 
         model = KitModel(weight_file='blurMapping.npy')
         model.summary()
@@ -247,12 +247,12 @@ def main(args=None):
 
         t = time.time()
         #	t = now()
-        # hist = custom_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
-        #                             validation_data=(X_test, y_test),
-        #                             callbacks=callbacks_list)
+        hist = custom_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
+                                    validation_data=(X_test, y_test),
+                                    callbacks=callbacks_list)
         # Y = np_utils.to_categorical(labels, num_classes)
-        hist = custom_model.fit_generator(datagen.flow(img_data, Y, batch_size=32),callbacks=callbacks_list,
-                        steps_per_epoch=1000, epochs=50)
+        # hist = custom_model.fit_generator(datagen.flow(img_data, Y, batch_size=32),callbacks=callbacks_list,
+        #                 steps_per_epoch=1000, epochs=50)
         print('Training time: %s' % (t - time.time()))
         (loss, accuracy) = custom_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
 
