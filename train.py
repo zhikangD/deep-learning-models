@@ -114,6 +114,7 @@ def main(args=None):
     else:
         with open('./data/img_data'+str(t_size)+'.pkl', 'rb') as pk:
             img_data = _pickle.load(pk)
+            img_data = img_data[0:7000,:,:,:]
             print(img_data.shape)
 
     num_classes = 2
