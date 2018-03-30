@@ -89,8 +89,10 @@ def main(args=None):
     if args.usepkldata==False:
         with open('./data/img_list.pkl', 'rb') as pk:
             img_list = _pickle.load(pk)
+        print(len(img_list))
         if args.model=='resnet_tuning':
             img_list=img_list[0:10000]
+        print(len(img_list))
         for img in img_list:
             # img_path = data_path + '/' + dataset + '/' + img
             img_path = args.data_dir+'/'+img+'.jpg'
