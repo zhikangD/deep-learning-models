@@ -234,7 +234,7 @@ def main(args=None):
         custom_model.summary()
         for layer in custom_model.layers[:-1]:
             layer.trainable = False
-        filepath = "./data/blurmapping-"+str(args.object)+"-{epoch:02d}-{val_acc:.2f}.h5"
+        filepath = "./data/blurmapping-"+str(args.object)+"-{epoch:02d}.h5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=False)
         callbacks_list = [checkpoint]
 
@@ -247,7 +247,7 @@ def main(args=None):
         #                             callbacks=callbacks_list)
         # Y = np_utils.to_categorical(labels, num_classes)
         hist = custom_model.fit_generator(datagen.flow(img_data, Y, batch_size=32),callbacks=callbacks_list,
-                        steps_per_epoch=len(img_data) / 32, epochs=1000)
+                        steps_per_epoch=1000, epochs=50)
         print('Training time: %s' % (t - time.time()))
         (loss, accuracy) = custom_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
 
