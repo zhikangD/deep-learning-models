@@ -178,12 +178,12 @@ def main(args=None):
         # Custom_vgg_model_1
         # Training the classifier alone
         # image_input = Input(shape=(224, 224, 3))
-        Y = labels
-        encoder = LabelEncoder()
-        encoder.fit(Y)
-        encoded_Y = encoder.transform(Y)
+        # Y = labels
+        # encoder = LabelEncoder()
+        # encoder.fit(Y)
+        # encoded_Y = encoder.transform(Y)
         # Shuffle the dataset
-        x, y = shuffle(img_data, encoded_Y, random_state=2)
+        x, y = shuffle(img_data, Y, random_state=2)
         # Split the dataset
         X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
         vgg_model = VGG16( include_top=False, weights='imagenet')
@@ -198,7 +198,7 @@ def main(args=None):
         x_1 = Dropout(0.25)(x_1)
         x_1 = Dense(8, activation='relu', name='fc3')(x_1)
         x_1 = Dropout(0.125)(x_1)
-        x_1 = Dense(1, activation='sigmoid', name='frontalpred')(x_1)
+        x_1 = Dense(2, activation='softmax', name='frontalpred')(x_1)
         custom_vgg_model = Model(input=inp, output=x_1)
         custom_vgg_model.summary()
 
@@ -227,7 +227,7 @@ def main(args=None):
         x = Dropout(0.5)(x)
         x = Dense(128, activation='relu', name='fc2')(x)
         x = Dropout(0.25)(x)
-        out = Dense(num_classes, activation='sigmoid', name='output_layer')(x)
+        out = Dense(num_classes, activation='softmax', name='output_layer')(x)
         custom_model = Model(inputs=model.input, outputs=out)
         custom_model.summary()
         for layer in custom_model.layers[:-1]:
