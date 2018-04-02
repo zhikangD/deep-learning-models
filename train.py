@@ -259,6 +259,7 @@ def main(args=None):
 
         print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
         ##############################################################################################
+    elif args.model == 'blurmapping2':
         datagen = ImageDataGenerator(
             featurewise_center=True,
             featurewise_std_normalization=True,
