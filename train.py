@@ -87,7 +87,7 @@ def main(args=None):
     # data_dir_list = os.listdir(data_path)
     img_data_list = []
     if args.usepkldata==False:
-        with open('./data/img_list.pkl', 'rb') as pk:
+        with open('./data/imglist96.pkl', 'rb') as pk:
             img_list = _pickle.load(pk)
         print(len(img_list))
         # if args.model=='resnet_tuning':
@@ -120,7 +120,7 @@ def main(args=None):
     num_classes = 2
     num_of_samples = img_data.shape[0]
     if args.object =='focus':
-        with open('./data/focus.pkl', 'rb') as pk:
+        with open('./data/focus96.pkl', 'rb') as pk:
             labels = _pickle.load(pk)
     elif args.object == 'quality':
         with open('./data/quality.pkl', 'rb') as pk:
