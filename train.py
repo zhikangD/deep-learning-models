@@ -91,7 +91,7 @@ def main(args=None):
             img_list = _pickle.load(pk)
         print(len(img_list))
         # if args.model=='resnet_tuning':
-        img_list=img_list[0:7000]
+        img_list=img_list[0:10000]
         print(len(img_list))
         for img in img_list:
             # img_path = data_path + '/' + dataset + '/' + img
@@ -114,7 +114,7 @@ def main(args=None):
     else:
         with open('./data/img_data'+str(t_size)+'.pkl', 'rb') as pk:
             img_data = _pickle.load(pk)
-            img_data = img_data[0:7000,:,:,:]
+            img_data = img_data[0:10000,:,:,:]
             print(img_data.shape)
 
     num_classes = 2
@@ -127,7 +127,7 @@ def main(args=None):
             labels = _pickle.load(pk)
 
     # if args.model=='resnet_tuning':
-    labels=labels[0:7000]
+    labels=labels[0:8000]
 
 
     names = ['bad', 'good']
@@ -258,6 +258,47 @@ def main(args=None):
         (loss, accuracy) = custom_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
 
         print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
+        ##############################################################################################
+        datagen = ImageDataGenerator(
+            featurewise_center=True,
+            featurewise_std_normalization=True,
+            rotation_range=20,
+            width_shift_range=0.2,
+            height_shift_range=0.2,
+            horizontal_flip=True)
+        datagen.fit(X_train)
+
+        model = KitModel(weight_file='blurMapping.npy')
+        model.summary()
+        last_layer = model.get_layer('relu5_3').output
+        x = Flatten(name='flatten')(last_layer)
+        x = Dense(512, activation='relu', name='fc_1')(x)
+        x = Dropout(0.5)(x)
+        x = Dense(128, activation='relu', name='fc2')(x)
+        x = Dropout(0.25)(x)
+        out = Dense(num_classes, activation='softmax', name='output_layer')(x)
+        custom_model = Model(inputs=model.input, outputs=out)
+        custom_model.summary()
+        for layer in custom_model.layers[:-1]:
+            layer.trainable = False
+        filepath = "./data/blurmapping-"+str(args.object)+"-{epoch:02d}.h5"
+        checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=False)
+        callbacks_list = [checkpoint]
+
+        custom_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+        t = time.time()
+        #	t = now()
+        # hist = custom_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
+        #                             validation_data=(X_test, y_test),
+        #                             callbacks=callbacks_list)
+        hist = custom_model.fit_generator(datagen.flow(X_train, y_train, batch_size=32),callbacks=callbacks_list,
+                        steps_per_epoch=1000, epochs=30)
+        print('Training time: %s' % (t - time.time()))
+        (loss, accuracy) = custom_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
+
+        print("[INFO] loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
+        ####################################################################################################
     elif args.model=='resnet_tuning':
         # Fine tune the resnet 50
         # image_input = Input(shape=(224, 224, 3))
