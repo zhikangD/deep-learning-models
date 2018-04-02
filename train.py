@@ -77,12 +77,12 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
     args = parse_args(args)
-    if args.model=='blurmapping':
-        t_size=96
+    if args.model=='resnet':
+        t_size=224
     elif args.model=='vgg16':
         t_size=64
     else:
-        t_size=224
+        t_size=96
     # data_path = args.data_dir
     # data_dir_list = os.listdir(data_path)
     img_data_list = []
