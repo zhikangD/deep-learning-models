@@ -268,7 +268,14 @@ def main(args=None):
             height_shift_range=0.2,
             horizontal_flip=True)
         datagen.fit(X_train)
-
+        val_gen = ImageDataGenerator(
+            featurewise_center=True,
+            featurewise_std_normalization=True,
+            rotation_range=20,
+            width_shift_range=0.2,
+            height_shift_range=0.2,
+            horizontal_flip=True)
+        val_gen.fit(X_test)
         model = KitModel(weight_file='blurMapping.npy')
         model.summary()
         last_layer = model.get_layer('relu5_3').output
@@ -294,7 +301,7 @@ def main(args=None):
         #                             validation_data=(X_test, y_test),
         #                             callbacks=callbacks_list)
         hist = custom_model.fit_generator(datagen.flow(X_train, y_train, batch_size=32),callbacks=callbacks_list,
-                        steps_per_epoch=1000, epochs=30)
+                        steps_per_epoch=1000, epochs=30, validation_data=val_gen.flow(X_test,y_test, batch_size=32))
         print('Training time: %s' % (t - time.time()))
         (loss, accuracy) = custom_model.evaluate(X_test, y_test, batch_size=args.batch_size, verbose=1)
 
