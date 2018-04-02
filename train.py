@@ -127,7 +127,7 @@ def main(args=None):
             labels = _pickle.load(pk)
 
     # if args.model=='resnet_tuning':
-    labels=labels[0:8000]
+    labels=labels[0:10000]
 
 
     names = ['bad', 'good']
