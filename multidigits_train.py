@@ -62,7 +62,7 @@ def main(args=None):
         if len(bib) > 2 and bib.lower()[0:2] in ['no']:
             digit_len.append(np_utils.to_categorical(0, 6))
             for i in range(5):
-                digits[i].append(get_cat('x'))
+                digits[i].append(get_cat(None))
         else:
             digit_len.append(np_utils.to_categorical(len(bib), 6))
             for i in range(len(bib)):
