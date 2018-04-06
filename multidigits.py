@@ -85,7 +85,7 @@ def DigitsModel(weight_file = None):
     digit_5 = Dense(12, name='digit_5')(x)
     # digits = K.stack([digit_1, digit_2, digit_3, digit_4, digit_5], axis=1)
 
-    model = Model(inputs=[data], outputs=[digit_length, digit_1, digit_2, digit_3, digit_4, digit_5])
+    model = Model(inputs=[x], outputs=[digit_length, digit_1, digit_2, digit_3, digit_4, digit_5])
     return model
 
 
