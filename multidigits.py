@@ -37,19 +37,19 @@ def load_weights_from_file(weight_file):
 def DigitsModel(weight_file = None):
     weights_dict = load_weights_from_file(weight_file) if not weight_file == None else None
     input_shape=(128,224,3)
-    locnet = Sequential()
-    locnet.add(MaxPooling2D(pool_size=(2, 2), input_shape=input_shape))
-    locnet.add(Conv2D(20, (5, 5)))
-    locnet.add(MaxPooling2D(pool_size=(2, 2)))
-    locnet.add(Conv2D(20, (5, 5)))
-
-    locnet.add(Flatten())
-    locnet.add(Dense(50))
-    locnet.add(Activation('relu'))
-    locnet.add(Dense(6))
-    data = Input(name='data', shape=(128, 224, 3,))
-    x = SpatialTransformer(localization_net=locnet,
-                                 output_size=(128, 224), input_shape=input_shape)(data)
+    # locnet = Sequential()
+    # locnet.add(MaxPooling2D(pool_size=(2, 2), input_shape=input_shape))
+    # locnet.add(Conv2D(20, (5, 5)))
+    # locnet.add(MaxPooling2D(pool_size=(2, 2)))
+    # locnet.add(Conv2D(20, (5, 5)))
+    #
+    # locnet.add(Flatten())
+    # locnet.add(Dense(50))
+    # locnet.add(Activation('relu'))
+    # locnet.add(Dense(6))
+    x = Input(name='data', shape=(128, 224, 3,))
+    # x = SpatialTransformer(localization_net=locnet,
+    #                              output_size=(128, 224), input_shape=input_shape)(data)
     x = Conv2D(48, (5, 5), activation='relu', padding='same', name='conv1')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), padding='same', name='block1_pool')(x)
     x = Dropout(0.25)(x)
