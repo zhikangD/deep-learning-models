@@ -45,8 +45,8 @@ def main(args=None):
     K.tensorflow_backend.set_session(get_session())
 
 
-    img_data = pickle.load(open(args.data_dir+"/bib_img.p", "rb"))
-    bibs = pickle.load(open(args.data_dir+"/bib.p", "rb"))
+    img_data = pickle.load(open(args.data_dir+"bib_img.p", "rb"))
+    bibs = pickle.load(open(args.data_dir+"bib.p", "rb"))
 
 
 
