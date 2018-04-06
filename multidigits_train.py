@@ -42,6 +42,9 @@ def get_cat(s):
     return res
 
 def main(args=None):
+    if args is None:
+        args = sys.argv[1:]
+    args = parse_args(args)
     K.tensorflow_backend.set_session(get_session())
 
 
