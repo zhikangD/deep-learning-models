@@ -47,10 +47,10 @@ def DigitsModel(weight_file = None):
     # locnet.add(Dense(50))
     # locnet.add(Activation('relu'))
     # locnet.add(Dense(6))
-    x = Input(name='data', shape=(128, 224, 3,))
+    data = Input(name='data', shape=(128, 224, 3,))
     # x = SpatialTransformer(localization_net=locnet,
     #                              output_size=(128, 224), input_shape=input_shape)(data)
-    x = Conv2D(48, (5, 5), activation='relu', padding='same', name='conv1')(x)
+    x = Conv2D(48, (5, 5), activation='relu', padding='same', name='conv1')(data)
     x = MaxPooling2D((2, 2), strides=(2, 2), padding='same', name='block1_pool')(x)
     x = Dropout(0.25)(x)
     x = Conv2D(64, (5, 5), activation='relu', padding='same', name='conv2')(x)
@@ -85,7 +85,7 @@ def DigitsModel(weight_file = None):
     digit_5 = Dense(12, name='digit_5')(x)
     # digits = K.stack([digit_1, digit_2, digit_3, digit_4, digit_5], axis=1)
 
-    model = Model(inputs=[x], outputs=[digit_length, digit_1, digit_2, digit_3, digit_4, digit_5])
+    model = Model(inputs=[data], outputs=[digit_length, digit_1, digit_2, digit_3, digit_4, digit_5])
     return model
 
 
