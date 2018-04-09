@@ -8,7 +8,7 @@ from keras.layers import Flatten
 from keras.layers import Dense
 from keras.layers import Input
 from keras.layers import Conv2D
-from keras.layers import MaxPooling2D
+from keras.layers import MaxPooling2D,BatchNormalization
 from keras.layers import Activation
 from keras.layers import Dropout
 from keras.layers import GlobalMaxPooling2D
@@ -51,27 +51,35 @@ def DigitsModel(weight_file = None):
     # x = SpatialTransformer(localization_net=locnet,
     #                              output_size=(128, 224), input_shape=input_shape)(data)
     x = Conv2D(48, (5, 5), activation='relu', padding='same', name='conv1')(data)
+    x = BatchNormalization()(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), padding='same', name='block1_pool')(x)
     x = Dropout(0.25)(x)
     x = Conv2D(64, (5, 5), activation='relu', padding='same', name='conv2')(x)
+    x = BatchNormalization()(x)
     x = MaxPooling2D((2, 2), strides=(1, 1),padding='same', name='block2_pool')(x)
     x = Dropout(0.25)(x)
     x = Conv2D(128, (5, 5), activation='relu', padding='same', name='conv3')(x)
+    x = BatchNormalization()(x)
     x = MaxPooling2D((2, 2), strides=(2, 2),padding='same', name='block3_pool')(x)
     x = Dropout(0.25)(x)
     x = Conv2D(160, (5, 5), activation='relu', padding='same', name='conv4')(x)
+    x = BatchNormalization()(x)
     x = MaxPooling2D((2, 2), strides=(1, 1),padding='same', name='block4_pool')(x)
     x = Dropout(0.25)(x)
     x = Conv2D(192, (5, 5), activation='relu', padding='same', name='conv5')(x)
+    x = BatchNormalization()(x)
     x = MaxPooling2D((2, 2), strides=(2, 2  ),padding='same', name='block5_pool')(x)
     x = Dropout(0.25)(x)
     x = Conv2D(192, (5, 5), activation='relu', padding='same', name='conv6')(x)
+    x = BatchNormalization()(x)
     x = MaxPooling2D((2, 2), strides=(1, 1),padding='same', name='block6_pool')(x)
     x = Dropout(0.25)(x)
     x = Conv2D(192, (5, 5), activation='relu', padding='same', name='conv7')(x)
+    x = BatchNormalization()(x)
     x = MaxPooling2D((2, 2), strides=(2, 2),padding='same', name='block7_pool')(x)
     x = Dropout(0.25)(x)
     x = Conv2D(192, (5, 5), activation='relu', padding='same', name='conv8')(x)
+    x = BatchNormalization()(x)
     x = MaxPooling2D((2, 2), strides=(1, 1),padding='same', name='block8_pool')(x)
     x = Dropout(0.25)(x)
     x = Flatten(name='flatten')(x)
