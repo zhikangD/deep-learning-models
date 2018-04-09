@@ -49,7 +49,7 @@ def main(args=None):
 
 
     img_data = pickle.load(open(args.data_dir+"bib_img.p", "rb"))
-    bibs = pickle.load(open(args.data_dir+"bib.p", "rb"))
+    bibs = pickle.load(open(args.data_dir+"labels_g.p", "rb"))
 
 
 
