@@ -72,6 +72,7 @@ def main(args=None):
     for i in range(5):
         digits[i] = np.array(digits[i])
     digit_len = np.array(digit_len)
+    print(digit_len)
 
 
     model = DigitsModel()
