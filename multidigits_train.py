@@ -73,19 +73,17 @@ def main(args=None):
         digits[i] = np.array(digits[i])
     digits=np.array(digits)
     digit_len = np.array(digit_len)
-    print(digit_len)
 
-    X_train=img_data[:8000]
-    X_test=img_data[8000:]
-    y_train=digits[:,:8000,:]
-    y_test=digits[:,8000:,:]
+
+
 
     model = DigitsModel()
     model.summary()
 
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-    model.fit(X_train, y_train,
-              batch_size=32, epochs=20, verbose=1,validation_data=(X_test, y_test))
+    model.fit(img_data[:8000], [digit_len[:8000],digits[0][:8000],digits[1][:8000],digits[2][:8000],digits[3][:8000],digits[4][:8000]],
+              batch_size=32, epochs=20, verbose=1,
+              validation_data=(img_data[8000:], [digit_len[8000:],digits[0][8000:],digits[1][8000:],digits[2][8000:],digits[3][8000:],digits[4][8000:]]))
     model.save(args.data_dir+'digits_model.h5')
 
 if __name__ == '__main__':
