@@ -71,11 +71,14 @@ def main(args=None):
                 digits[j].append(get_cat(None))
     for i in range(5):
         digits[i] = np.array(digits[i])
+    digits=np.array(digits)
     digit_len = np.array(digit_len)
     print(digit_len)
 
-    X_train, X_test, y_train, y_test = train_test_split(img_data, [digit_len, digits[0], digits[1], digits[2], digits[3], digits[4]],
-                                                        test_size=0.2, random_state=2)
+    X_train=img_data[:8000]
+    X_test=img_data[8000:]
+    y_train=digits[:,:8000,:]
+    y_test=digits[:,8000:,:]
 
     model = DigitsModel()
     model.summary()
