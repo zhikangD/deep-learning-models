@@ -85,7 +85,7 @@ def DigitsModel(weight_file = None):
     x = Flatten(name='flatten')(x)
     x = Dense(4096, activation='relu', name='fc1')(x)
     x = Dense(4096, activation='relu', name='fc2')(x)
-    digit_length = Dense(6, name='digit_length')(x)
+    digit_length = Dense(6, activation='softmax',name='digit_length')(x)
     digit_1 = Dense(12, activation='softmax', name='digit_1')(x)
     digit_2 = Dense(12, activation='softmax', name='digit_2')(x)
     digit_3 = Dense(12, activation='softmax', name='digit_3')(x)
@@ -93,7 +93,8 @@ def DigitsModel(weight_file = None):
     digit_5 = Dense(12, activation='softmax', name='digit_5')(x)
     # digits = K.stack([digit_1, digit_2, digit_3, digit_4, digit_5], axis=1)
 
-    model = Model(inputs=[data], outputs=[digit_length, digit_1, digit_2, digit_3, digit_4, digit_5])
+    # model = Model(inputs=[data], outputs=[digit_length, digit_1, digit_2, digit_3, digit_4, digit_5])
+    model = Model(inputs=[data], outputs=[digit_1, digit_2, digit_3, digit_4, digit_5])
     return model
 
 
