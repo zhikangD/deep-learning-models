@@ -74,13 +74,15 @@ def main(args=None):
     digit_len = np.array(digit_len)
     print(digit_len)
 
+    X_train, X_test, y_train, y_test = train_test_split(img_data, [digit_len, digits[0], digits[1], digits[2], digits[3], digits[4]],
+                                                        test_size=0.2, random_state=2)
 
     model = DigitsModel()
     model.summary()
 
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-    model.fit(img_data, [digit_len, digits[0], digits[1], digits[2], digits[3], digits[4]],
-              batch_size=32, epochs=20, verbose=1)
+    model.fit(X_train, y_train,
+              batch_size=32, epochs=20, verbose=1,validation_data=(X_test, y_test))
     model.save(args.data_dir+'digits_model.h5')
 
 if __name__ == '__main__':
