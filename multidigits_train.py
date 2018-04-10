@@ -84,9 +84,9 @@ def main(args=None):
     # model.fit(img_data[:8000], [digit_len[:8000],digits[0][:8000],digits[1][:8000],digits[2][:8000],digits[3][:8000],digits[4][:8000]],
     #           batch_size=32, epochs=20, verbose=1,
     #           validation_data=(img_data[8000:], [digit_len[8000:],digits[0][8000:],digits[1][8000:],digits[2][8000:],digits[3][8000:],digits[4][8000:]]))
-    model.fit(img_data[:8000], [digits[0][:8000],digits[1][:8000],digits[2][:8000],digits[3][:8000],digits[4][:8000]],
+    model.fit(img_data[:8000], [digits[0][:8000],digits[1][:8000],digits[2][:8000],digits[3][:8000]],
               batch_size=32, epochs=20, verbose=1,
-              validation_data=(img_data[8000:], [digits[0][8000:],digits[1][8000:],digits[2][8000:],digits[3][8000:],digits[4][8000:]]))
+              validation_data=(img_data[8000:], [digits[0][8000:],digits[1][8000:],digits[2][8000:],digits[3][8000:]]))
     model.save(args.data_dir+'digits_model.h5')
 
 if __name__ == '__main__':

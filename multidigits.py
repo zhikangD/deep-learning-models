@@ -94,7 +94,7 @@ def DigitsModel(weight_file = None):
     # digits = K.stack([digit_1, digit_2, digit_3, digit_4, digit_5], axis=1)
 
     # model = Model(inputs=[data], outputs=[digit_length, digit_1, digit_2, digit_3, digit_4, digit_5])
-    model = Model(inputs=[data], outputs=[digit_1, digit_2, digit_3, digit_4, digit_5])
+    model = Model(inputs=[data], outputs=[digit_1, digit_2, digit_3, digit_4])
     return model
 
 
