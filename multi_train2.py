@@ -38,10 +38,10 @@ def parse_args(args):
 
 def DigitsModel2(shape=(128,224,3), weight_file = None):
     data = Input(name='data', shape=shape)
-    x = Conv2D(32, (3,3),activation='relu',padding='same', name='conv1')(data)
-    # x = Activation('relu')(x)
-    x = Conv2D(32, (3, 3),activation='relu', name='conv2')(x)
-    # x = Activation('relu')(x)
+    x = Conv2D(64, (3,3),activation='relu',padding='same', name='conv1')(data)
+    x = BatchNormalization()(x)
+    x = Conv2D(128, (3, 3),activation='relu', name='conv2')(x)
+    x = BatchNormalization()(x)
     x = MaxPooling2D((2, 2), name='pool1')(x)
     x = Dropout(0.25)(x)
     flatten = Flatten()(x)
@@ -65,13 +65,13 @@ def main(args=None):
     args = parse_args(args)
     K.tensorflow_backend.set_session(get_session())
 
-    # img_data = pickle.load(open(args.data_dir+"bib_gray.p", "rb"))
-    # labels = pickle.load(open(args.data_dir+"labels_gray.p", "rb"))
-    img_data_1 = pickle.load(open(args.data_dir + "twisted_img_3c_1.p", "rb"))
-    img_data_2 = pickle.load(open(args.data_dir + "twisted_img_3c_2.p", "rb"))
-    img_data=np.concatenate((img_data_1,img_data_2),axis=0)
-    del img_data_1
-    del img_data_2
+    img_data = pickle.load(open(args.data_dir+"20000img_gray.p", "rb"))
+    labels = pickle.load(open(args.data_dir+"20000labels_v1.p", "rb"))
+    # img_data_1 = pickle.load(open(args.data_dir + "twisted_img_3c_1.p", "rb"))
+    # img_data_2 = pickle.load(open(args.data_dir + "twisted_img_3c_2.p", "rb"))
+    # img_data=np.concatenate((img_data_1,img_data_2),axis=0)
+    # del img_data_1
+    # del img_data_2
     labels = pickle.load(open(args.data_dir+"twisted_labels.p", "rb"))
     rows=img_data.shape[1]
     cols= img_data.shape[2]
@@ -88,7 +88,6 @@ def main(args=None):
     for bib in labels:
         bib = str(bib)
         if len(bib) > 2 and bib.lower()[0:2] in ['no']:
-            print(1)
             digit_len.append(np_utils.to_categorical(0, 6))
             for i in range(5):
                 digits[i].append(get_cat(None))
@@ -98,7 +97,6 @@ def main(args=None):
                 digits[i].append(get_cat(bib[i]))
             for j in range(len(bib), 5):
                 digits[j].append(get_cat(None))
-                print(1)
     for i in range(5):
         digits[i] = np.array(digits[i])
     digit_len = np.array(digit_len)
@@ -117,7 +115,7 @@ def main(args=None):
     # Fitting the model
     model.fit(img_data[:split], train_digits, batch_size=args.batch_size, epochs=args.epochs, verbose=1,
               validation_data=(img_data[split:], test_digits))
-    model.save(args.data_dir + 'digits_model.h5')
+    model.save(args.data_dir + 'digits_model_gray_v0.h5')
 
 if __name__ == '__main__':
     main()
