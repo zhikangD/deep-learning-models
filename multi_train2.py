@@ -68,8 +68,6 @@ def main(args=None):
 
     # img_data = pickle.load(open(args.data_dir+"20000img_gray.p", "rb"))
     # labels = pickle.load(open(args.data_dir+"20000labels_v1.p", "rb"))
-    img_data = pickle.load(open(args.data_dir+"bib_gray.p", "rb"))
-    labels = pickle.load(open(args.data_dir+"labels_gray.p", "rb"))
 
     # img_data_1 = pickle.load(open(args.data_dir + "twisted_img_3c_1.p", "rb"))
     # img_data_2 = pickle.load(open(args.data_dir + "twisted_img_3c_2.p", "rb"))
@@ -80,13 +78,13 @@ def main(args=None):
 
 
 
-    img_data, labels = shuffle(img_data, labels, random_state=2)
-
-    pickle.dump(labels, open("/home/ubuntu/zk/deep-learning-models/data/20000labels_v1.p", "wb"))
-    pickle.dump(img_data, open("/home/ubuntu/zk/deep-learning-models/data/20000img_gray.p", "wb"),
-                protocol=4)
-    del img_data
-    del labels
+    # img_data, labels = shuffle(img_data, labels, random_state=2)
+    #
+    # pickle.dump(labels, open("/home/ubuntu/zk/deep-learning-models/data/20000labels_v1.p", "wb"))
+    # pickle.dump(img_data, open("/home/ubuntu/zk/deep-learning-models/data/20000img_gray.p", "wb"),
+    #             protocol=4)
+    # del img_data
+    # del labels
     img_data = pickle.load(open(args.data_dir+"20000img_gray.p", "rb"))
     labels = pickle.load(open(args.data_dir+"20000labels_v1.p", "rb"))
 

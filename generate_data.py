@@ -38,7 +38,7 @@ def main():
     #     i = i + 1
 
     print("done")
-    print(np.shape(labels))
+
 
 
     img_data_list = []
@@ -56,6 +56,7 @@ def main():
     img_data = np.array(img_data_list)
     img_data = np.rollaxis(img_data, 1, 0)
     img_data = img_data[0]
+    print(np.shape(labels))
     print(img_data.shape)
     print('write to local')
     img_data_s, labels_s = shuffle(img_data, labels, random_state=2)
