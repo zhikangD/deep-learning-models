@@ -33,11 +33,11 @@ def parse_args(args):
     parser = argparse.ArgumentParser(description='training script')
     parser.add_argument('--data_dir', help='Path to dataset directory.')
     parser.add_argument('--epochs', help='Number of epochs to train.', type=int, default=20)
-    parser.add_argument('--batch_size', default=128)
+    parser.add_argument('--batch_size', default=32)
     return parser.parse_args(args)
 
 def DigitsModel2(weight_file = None):
-    data = Input(name='data', shape=(64, 128, 1))
+    data = Input(name='data', shape=(128, 224, 3))
     x = Conv2D(32, (3,3),activation='relu',padding='same', name='conv1')(data)
     # x = Activation('relu')(x)
     x = Conv2D(32, (3, 3),activation='relu', name='conv2')(x)
@@ -65,8 +65,10 @@ def main(args=None):
     args = parse_args(args)
     K.tensorflow_backend.set_session(get_session())
 
-    img_data = pickle.load(open(args.data_dir+"bib_gray.p", "rb"))
-    labels = pickle.load(open(args.data_dir+"labels_gray.p", "rb"))
+    # img_data = pickle.load(open(args.data_dir+"bib_gray.p", "rb"))
+    # labels = pickle.load(open(args.data_dir+"labels_gray.p", "rb"))
+    img_data = pickle.load(open(args.data_dir+"bib_img_g.p", "rb"))
+    labels = pickle.load(open(args.data_dir+"labels_g.p", "rb"))
 
     digit_len = []
     digits = []
