@@ -48,8 +48,11 @@ def main(args=None):
     K.tensorflow_backend.set_session(get_session())
 
 
-    img_data = pickle.load(open(args.data_dir+"bib_img_g.p", "rb"))
-    bibs = pickle.load(open(args.data_dir+"labels_g.p", "rb"))
+    # img_data = pickle.load(open(args.data_dir+"bib_img_g.p", "rb"))
+    # bibs = pickle.load(open(args.data_dir+"labels_g.p", "rb"))
+
+    img_data = pickle.load(open(args.data_dir+"bib_gray.p", "rb"))
+    labels = pickle.load(open(args.data_dir+"labels_gray.p", "rb"))
 
 
 
@@ -58,7 +61,7 @@ def main(args=None):
     for i in range(5):
         digits.append([])
 
-    for bib in bibs:
+    for bib in labels:
         if len(bib) > 2 and bib.lower()[0:2] in ['no']:
             digit_len.append(np_utils.to_categorical(0, 6))
             for i in range(5):
