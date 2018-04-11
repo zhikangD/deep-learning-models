@@ -14,36 +14,38 @@ H = 64
 
 def main():
     i = 0
-    img = Image.new("RGB", (W, H), "black")
-    draw = ImageDraw.Draw(img)
     font = ImageFont.truetype("/home/ubuntu/zk/deep-learning-models/data/impact.ttf", 30)
     labels = []
     print('start generatiing data')
     while i < 10000:
+        img = Image.new("RGB", (W, H), "black")
+        draw = ImageDraw.Draw(img)
         rand = random.randint(10000, 99999)
         msg = str(rand)
         labels.append(msg)
         w, h = draw.textsize(msg)
         draw.text(((W - w) / 2, (H - h) / 2), msg, fill=(255, 255, 255), font=font)
-        img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample_0/sample' + str(i) + '.jpg')
+        img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample/sample' + str(i) + '.jpg')
         i = i + 1
 
-    # while i < 20000:
-    #     rand = random.randint(1000, 9999)
-    #     msg = str(rand)
-    #     labels.append(msg)
-    #     w, h = draw.textsize(msg)
-    #     draw.text(((W - w) / 2, (H - h) / 2), msg, fill=(255, 255, 255), font=font)
-    #     img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample/sample' + str(i) + '.jpg')
-    #     i = i + 1
+    while i < 20000:
+        img = Image.new("RGB", (W, H), "black")
+        draw = ImageDraw.Draw(img)
+        rand = random.randint(1000, 9999)
+        msg = str(rand)
+        labels.append(msg)
+        w, h = draw.textsize(msg)
+        draw.text(((W - w) / 2, (H - h) / 2), msg, fill=(255, 255, 255), font=font)
+        img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample/sample' + str(i) + '.jpg')
+        i = i + 1
 
     print("done")
 
 
 
     img_data_list = []
-    for i in range(0, 10000):
-        filename = '/home/ubuntu/zk/deep-learning-models/data/digits_sample_0/sample' + str(i) + '.jpg'
+    for i in range(0, 20000):
+        filename = '/home/ubuntu/zk/deep-learning-models/data/digits_sample/sample' + str(i) + '.jpg'
         img = cv2.imread(filename)
         #     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
