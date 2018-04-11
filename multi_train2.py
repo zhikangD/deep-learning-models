@@ -39,9 +39,9 @@ def parse_args(args):
 
 def DigitsModel2(shape=(128,224,3), weight_file = None):
     data = Input(name='data', shape=shape)
-    x = Conv2D(64, (3,3),activation='relu',padding='same', name='conv1')(data)
+    x = Conv2D(32, (3,3),activation='relu',padding='same', name='conv1')(data)
     # x = BatchNormalization()(x)
-    x = Conv2D(128, (3, 3),activation='relu', name='conv2')(x)
+    x = Conv2D(32, (3, 3),activation='relu', name='conv2')(x)
     # x = BatchNormalization()(x)
     x = MaxPooling2D((2, 2), name='pool1')(x)
     x = Dropout(0.25)(x)
