@@ -36,8 +36,8 @@ def parse_args(args):
     parser.add_argument('--batch_size', default=32)
     return parser.parse_args(args)
 
-def DigitsModel2(weight_file = None):
-    data = Input(name='data', shape=(128, 224, 3))
+def DigitsModel2(shape=(128,224,3), weight_file = None):
+    data = Input(name='data', shape=shape)
     x = Conv2D(32, (3,3),activation='relu',padding='same', name='conv1')(data)
     # x = Activation('relu')(x)
     x = Conv2D(32, (3, 3),activation='relu', name='conv2')(x)
@@ -67,8 +67,15 @@ def main(args=None):
 
     # img_data = pickle.load(open(args.data_dir+"bib_gray.p", "rb"))
     # labels = pickle.load(open(args.data_dir+"labels_gray.p", "rb"))
-    img_data = pickle.load(open(args.data_dir+"bib_img_g.p", "rb"))
-    labels = pickle.load(open(args.data_dir+"labels_g.p", "rb"))
+    img_data_1 = pickle.load(open(args.data_dir + "twisted_img_3c_1.p", "rb"))
+    img_data_2 = pickle.load(open(args.data_dir + "twisted_img_3c_2.p", "rb"))
+    img_data=np.concatenate((img_data_1,img_data_2),axis=0)
+    del img_data_1
+    del img_data_2
+    labels = pickle.load(open(args.data_dir+"twisted_labels.p", "rb"))
+    rows=img_data.shape[1]
+    cols= img_data.shape[2]
+    channels=img_data.shape[3]
 
     digit_len = []
     digits = []
@@ -101,7 +108,7 @@ def main(args=None):
     train_digits = [digits[0][:split], digits[1][:split], digits[2][:split], digits[3][:split], digits[4][:split]]
     test_digits = [digits[0][split:], digits[1][split:], digits[2][split:], digits[3][split:], digits[4][split:]]
 
-    model = DigitsModel2()
+    model = DigitsModel2(shape=(rows,cols,channels))
     model.summary()
 
     # Compiling the model
