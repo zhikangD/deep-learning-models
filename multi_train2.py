@@ -78,7 +78,17 @@ def main(args=None):
     # del img_data_2
     # labels = pickle.load(open(args.data_dir+"twisted_labels.p", "rb"))
 
+
+
     img_data, labels = shuffle(img_data, labels, random_state=2)
+
+    pickle.dump(labels, open("/home/ubuntu/zk/deep-learning-models/data/20000labels_v1.p", "wb"))
+    pickle.dump(img_data, open("/home/ubuntu/zk/deep-learning-models/data/20000img_gray.p", "wb"),
+                protocol=4)
+    del img_data
+    del labels
+    img_data = pickle.load(open(args.data_dir+"20000img_gray.p", "rb"))
+    labels = pickle.load(open(args.data_dir+"20000labels_v1.p", "rb"))
 
     rows=img_data.shape[1]
     cols= img_data.shape[2]
