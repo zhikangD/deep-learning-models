@@ -94,8 +94,10 @@ def main(args=None):
         digits[i] = np.array(digits[i])
     digit_len = np.array(digit_len)
     digits = np.array(digits)
-    train_digits = [digits[0][:8000], digits[1][:8000], digits[2][:8000], digits[3][:8000], digits[4][:8000]]
-    test_digits = [digits[0][8000:], digits[1][8000:], digits[2][8000:], digits[3][8000:], digits[4][8000:]]
+    data_size = img_data.shape[0]
+    split = int(data_size*0.8)
+    train_digits = [digits[0][:split], digits[1][:split], digits[2][:split], digits[3][:split], digits[4][:split]]
+    test_digits = [digits[0][split:], digits[1][split:], digits[2][split:], digits[3][split:], digits[4][split:]]
 
     model = DigitsModel2()
     model.summary()
@@ -104,8 +106,8 @@ def main(args=None):
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
     # Fitting the model
-    model.fit(img_data[:8000], train_digits, batch_size=args.batch_size, epochs=args.epochs, verbose=1,
-              validation_data=(img_data[8000:], test_digits))
+    model.fit(img_data[:split], train_digits, batch_size=args.batch_size, epochs=args.epochs, verbose=1,
+              validation_data=(img_data[split:], test_digits))
     model.save(args.data_dir + 'digits_model.h5')
 
 if __name__ == '__main__':
