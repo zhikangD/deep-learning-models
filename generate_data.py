@@ -25,25 +25,25 @@ def main():
         labels.append(msg)
         w, h = draw.textsize(msg)
         draw.text(((W - w) / 2, (H - h) / 2), msg, fill=(255, 255, 255), font=font)
-        img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample/sample' + str(i) + '.jpg')
+        img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample_0/sample' + str(i) + '.jpg')
         i = i + 1
 
-    while i < 20000:
-        rand = random.randint(1000, 9999)
-        msg = str(rand)
-        labels.append(msg)
-        w, h = draw.textsize(msg)
-        draw.text(((W - w) / 2, (H - h) / 2), msg, fill=(255, 255, 255), font=font)
-        img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample/sample' + str(i) + '.jpg')
-        i = i + 1
+    # while i < 20000:
+    #     rand = random.randint(1000, 9999)
+    #     msg = str(rand)
+    #     labels.append(msg)
+    #     w, h = draw.textsize(msg)
+    #     draw.text(((W - w) / 2, (H - h) / 2), msg, fill=(255, 255, 255), font=font)
+    #     img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample/sample' + str(i) + '.jpg')
+    #     i = i + 1
 
     print("done")
     print(np.shape(labels))
 
 
     img_data_list = []
-    for i in range(0, 20000):
-        filename = '/home/ubuntu/zk/deep-learning-models/data/digits_sample/sample' + str(i) + '.jpg'
+    for i in range(0, 10000):
+        filename = '/home/ubuntu/zk/deep-learning-models/data/digits_sample_0/sample' + str(i) + '.jpg'
         img = cv2.imread(filename)
         #     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -62,7 +62,7 @@ def main():
     pickle.dump(labels_s, open("/home/ubuntu/zk/deep-learning-models/data/20000labels_v1.p", "wb"))
     pickle.dump(img_data_s, open("/home/ubuntu/zk/deep-learning-models/data/20000img_gray.p", "wb"),
                 protocol=4)
-    l =pickle.load( open("/home/ubuntu/zk/deep-learning-models/data/20000img_gray.p", "rb"))
+
 
 if __name__ == '__main__':
     main()
