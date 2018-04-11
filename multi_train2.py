@@ -12,6 +12,7 @@ import pickle
 import argparse
 import numpy as np
 from keras.utils import np_utils
+from sklearn.utils import shuffle
 
 def get_session():
     config = tf.ConfigProto()
@@ -69,12 +70,16 @@ def main(args=None):
     # labels = pickle.load(open(args.data_dir+"20000labels_v1.p", "rb"))
     img_data = pickle.load(open(args.data_dir+"bib_gray.p", "rb"))
     labels = pickle.load(open(args.data_dir+"labels_gray.p", "rb"))
+
     # img_data_1 = pickle.load(open(args.data_dir + "twisted_img_3c_1.p", "rb"))
     # img_data_2 = pickle.load(open(args.data_dir + "twisted_img_3c_2.p", "rb"))
     # img_data=np.concatenate((img_data_1,img_data_2),axis=0)
     # del img_data_1
     # del img_data_2
     # labels = pickle.load(open(args.data_dir+"twisted_labels.p", "rb"))
+
+    img_data, labels = shuffle(img_data, labels, random_state=2)
+
     rows=img_data.shape[1]
     cols= img_data.shape[2]
     channels=img_data.shape[3]
