@@ -93,7 +93,7 @@ def main(args=None):
 
     labels = []
     img_data_list = []
-    filedir = args.data_dir+'renders/'
+    filedir = args.data_dir+'renders_v3/'
     files = os.listdir(filedir)
     for filename in files:
         labels.append(filename[7:11])
