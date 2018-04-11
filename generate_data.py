@@ -25,7 +25,7 @@ def main():
         labels.append(msg)
         w, h = draw.textsize(msg)
         draw.text(((W - w) / 2, (H - h) / 2), msg, fill=(255, 255, 255), font=font)
-        img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample_0/sample' + str(i) + '.jpg')
+        img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample/sample' + str(i) + '.jpg')
         i = i + 1
     print(i)
     while i < 20000:
@@ -36,7 +36,7 @@ def main():
         labels.append(msg)
         w, h = draw.textsize(msg)
         draw.text(((W - w) / 2, (H - h) / 2), msg, fill=(255, 255, 255), font=font)
-        img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample_0/sample' + str(i) + '.jpg')
+        img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample/sample' + str(i) + '.jpg')
         i = i + 1
 
     print("done")
@@ -44,8 +44,8 @@ def main():
 
 
     img_data_list = []
-    for i in range(0, 10000):
-        filename = '/home/ubuntu/zk/deep-learning-models/data/digits_sample_0/sample' + str(i) + '.jpg'
+    for i in range(0, 20000):
+        filename = '/home/ubuntu/zk/deep-learning-models/data/digits_sample/sample' + str(i) + '.jpg'
         img = cv2.imread(filename)
         #     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
