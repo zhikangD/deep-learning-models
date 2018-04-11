@@ -65,8 +65,10 @@ def main(args=None):
     args = parse_args(args)
     K.tensorflow_backend.set_session(get_session())
 
-    img_data = pickle.load(open(args.data_dir+"20000img_gray.p", "rb"))
-    labels = pickle.load(open(args.data_dir+"20000labels_v1.p", "rb"))
+    # img_data = pickle.load(open(args.data_dir+"20000img_gray.p", "rb"))
+    # labels = pickle.load(open(args.data_dir+"20000labels_v1.p", "rb"))
+    img_data = pickle.load(open(args.data_dir+"bib_gray.p", "rb"))
+    labels = pickle.load(open(args.data_dir+"labels_gray.p", "rb"))
     # img_data_1 = pickle.load(open(args.data_dir + "twisted_img_3c_1.p", "rb"))
     # img_data_2 = pickle.load(open(args.data_dir + "twisted_img_3c_2.p", "rb"))
     # img_data=np.concatenate((img_data_1,img_data_2),axis=0)
