@@ -41,16 +41,17 @@ def parse_args(args):
 
 def DigitsModel2(shape=(128,224,3), weight_file = None):
     data = Input(name='data', shape=shape)
-    x = Conv2D(32, (3,3),activation='relu',padding='same', name='conv1')(data)
-    # x = BatchNormalization()(x)
-    x = Conv2D(32, (3, 3),activation='relu', name='conv2')(x)
-    # x = BatchNormalization()(x)
-    x = MaxPooling2D((2, 2), name='pool1')(x)
+    x = Conv2D(64, (3,3),activation='relu',padding='same', name='conv1')(data)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool1')(x)
+    x = Conv2D(128, (3, 3),activation='relu', padding='same', name='conv2')(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool2')(x)
+    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3')(x)
+    x = MaxPooling2D((2, 2), name='pool3')(x)
     x = Dropout(0.25)(x)
     flatten = Flatten()(x)
 
-    dense = Dense(128, activation='relu')(flatten)
-    dense = Dropout(0.25)(dense)
+    dense = Dense(256, activation='relu')(flatten)
+    dense = Dropout(0.5)(dense)
 
     digit_1 = Dense(11, activation='softmax', name='digit_1')(dense)
     digit_2 = Dense(11, activation='softmax', name='digit_2')(dense)
@@ -151,8 +152,10 @@ def main(args=None):
     # Fitting the model
     model.fit(img_data[:split], train_digits, batch_size=args.batch_size, epochs=args.epochs, verbose=1,
               validation_data=(img_data[split:], test_digits))
-    model.save(args.data_dir + 'digits_model_gray_v0.h5')
+    model.save(args.data_dir + 'digits_model_gray_v1.h5')
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
 
+model = DigitsModel2(shape=(96,192,1))
+model.summary()
