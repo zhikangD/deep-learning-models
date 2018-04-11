@@ -72,7 +72,7 @@ def main(args=None):
     # img_data=np.concatenate((img_data_1,img_data_2),axis=0)
     # del img_data_1
     # del img_data_2
-    labels = pickle.load(open(args.data_dir+"twisted_labels.p", "rb"))
+    # labels = pickle.load(open(args.data_dir+"twisted_labels.p", "rb"))
     rows=img_data.shape[1]
     cols= img_data.shape[2]
     channels=img_data.shape[3]

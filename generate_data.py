@@ -18,6 +18,7 @@ def main():
     draw = ImageDraw.Draw(img)
     font = ImageFont.truetype("/home/ubuntu/zk/deep-learning-models/data/impact.ttf", 30)
     labels = []
+    print('start generatiing data')
     while i < 10000:
         rand = random.randint(10000, 99999)
         msg = str(rand)
@@ -36,6 +37,8 @@ def main():
         img.save('/home/ubuntu/zk/deep-learning-models/data/digits_sample/sample' + str(i) + '.jpg')
         i = i + 1
 
+    print("done")
+    print(np.shape(labels))
 
 
     img_data_list = []
@@ -54,12 +57,12 @@ def main():
     img_data = np.rollaxis(img_data, 1, 0)
     img_data = img_data[0]
     print(img_data.shape)
-
+    print('write to local')
     img_data_s, labels_s = shuffle(img_data, labels, random_state=2)
     pickle.dump(labels_s, open("/home/ubuntu/zk/deep-learning-models/data/20000labels_v1.p", "wb"))
     pickle.dump(img_data_s, open("/home/ubuntu/zk/deep-learning-models/data/20000img_gray.p", "wb"),
                 protocol=4)
-
+    l =pickle.load( open("/home/ubuntu/zk/deep-learning-models/data/20000img_gray.p", "rb"))
 
 if __name__ == '__main__':
     main()
