@@ -13,6 +13,8 @@ import argparse
 import numpy as np
 from keras.utils import np_utils
 from sklearn.utils import shuffle
+import os
+import cv2
 
 def get_session():
     config = tf.ConfigProto()
@@ -85,8 +87,27 @@ def main(args=None):
     #             protocol=4)
     # del img_data
     # del labels
-    img_data = pickle.load(open(args.data_dir+"20000img_gray.p", "rb"))
-    labels = pickle.load(open(args.data_dir+"20000labels_v1.p", "rb"))
+    # img_data = pickle.load(open(args.data_dir+"20000img_gray.p", "rb"))
+    # labels = pickle.load(open(args.data_dir+"20000labels_v1.p", "rb"))
+
+    labels = []
+    img_data_list = []
+    filedir = args.data_dir+'renders/'
+    files = os.listdir(filedir)
+    for filename in files:
+        labels.append(filename[7:11])
+        img = cv2.imread(filedir + filename)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.resize(img, (192, 96)).astype('float32')
+        img = img / 255
+        x = np.expand_dims(img, axis=0)
+        x = img.reshape(1, 96, 192, 1)
+        img_data_list.append(x)
+    img_data = np.array(img_data_list)
+    img_data = np.rollaxis(img_data, 1, 0)
+    img_data = img_data[0]
+    img_data, labels = shuffle(img_data, labels, random_state=2)
+
 
     rows=img_data.shape[1]
     cols= img_data.shape[2]
