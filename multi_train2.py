@@ -60,9 +60,9 @@ def DigitsModel2(shape=(96,192,1), weight_file = None):
     flatten = Flatten()(x)
 
     dense = Dense(512, activation='relu',name='fc1')(flatten)
-    # dense = Dropout(0.25)(dense)
+    dense = Dropout(0.25)(dense)
     dense = Dense(512, activation='relu',name='fc2')(dense)
-    dense = Dropout(0.5)(dense)
+    dense = Dropout(0.25)(dense)
 
     digit_1 = Dense(11, activation='softmax', name='digit_1')(dense)
     digit_2 = Dense(11, activation='softmax', name='digit_2')(dense)
