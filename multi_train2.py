@@ -132,6 +132,8 @@ def main(args=None):
     img_data = img_data[0]
     img_data, labels = shuffle(img_data, labels, random_state=2)
 
+    print(labels)
+
 
     rows=img_data.shape[1]
     cols= img_data.shape[2]
