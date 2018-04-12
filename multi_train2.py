@@ -41,12 +41,14 @@ def parse_args(args):
 
 def DigitsModel2(shape=(128,224,3), weight_file = None):
     data = Input(name='data', shape=shape)
-    x = Conv2D(64, (3,3),activation='relu',padding='same', name='conv1')(data)
+    x = Conv2D(64, (3,3),activation='relu', padding='same', name='conv1')(data)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool1')(x)
     x = Conv2D(128, (3, 3),activation='relu', padding='same', name='conv2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool2')(x)
     x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3')(x)
-    x = MaxPooling2D((2, 2), name='pool3')(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool3')(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4')(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool4')(x)
     x = Dropout(0.25)(x)
     flatten = Flatten()(x)
 
