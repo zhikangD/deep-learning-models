@@ -64,11 +64,11 @@ def DigitsModel2(shape=(96,192,1), weight_file = None):
     dense = Dense(512, activation='relu',name='fc2')(dense)
     dense = Dropout(0.25)(dense)
 
-    digit_1 = Dense(11, activation='softmax', name='digit_1')(dense)
-    digit_2 = Dense(11, activation='softmax', name='digit_2')(dense)
-    digit_3 = Dense(11, activation='softmax', name='digit_3')(dense)
-    digit_4 = Dense(11, activation='softmax', name='digit_4')(dense)
-    digit_5 = Dense(11, activation='softmax', name='digit_5')(dense)
+    digit_1 = Dense(12, activation='softmax', name='digit_1')(dense)
+    digit_2 = Dense(12, activation='softmax', name='digit_2')(dense)
+    digit_3 = Dense(12, activation='softmax', name='digit_3')(dense)
+    digit_4 = Dense(12, activation='softmax', name='digit_4')(dense)
+    digit_5 = Dense(12, activation='softmax', name='digit_5')(dense)
 
     model = Model(input=data,output=[digit_1,digit_2,digit_3,digit_4,digit_5])
 
