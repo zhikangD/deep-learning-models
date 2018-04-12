@@ -36,7 +36,7 @@ def parse_args(args):
     parser = argparse.ArgumentParser(description='training script')
     parser.add_argument('--data_dir', help='Path to dataset directory.')
     parser.add_argument('--epochs', help='Number of epochs to train.', type=int, default=20)
-    parser.add_argument('--batch_size', default=32)
+    parser.add_argument('--batch_size', default=32, type=int)
     return parser.parse_args(args)
 
 def DigitsModel2(shape=(128,224,3), weight_file = None):
