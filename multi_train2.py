@@ -22,9 +22,9 @@ def get_session():
     return tf.Session(config=config)
 def get_cat(s):
     if s is None:
-        res = np_utils.to_categorical(10, 11)
+        res = np_utils.to_categorical(10, 12)
     elif s.isdigit():
-        res = np_utils.to_categorical(int(s), 11)
+        res = np_utils.to_categorical(int(s), 12)
     # elif s.lower() in ['x', '-', '*']:
     #     res = np_utils.to_categorical(11, 12)
     else:
@@ -53,9 +53,9 @@ def DigitsModel2(shape=(96,192,1), weight_file = None):
     x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4')(x)
     # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool4')(x)
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5')(x)
+    # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5')(x)
     # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_2')(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool5')(x)
+    # x = MaxPooling2D((2, 2), strides=(2, 2), name='pool5')(x)
     x = Dropout(0.25)(x)
     flatten = Flatten()(x)
 
@@ -64,11 +64,11 @@ def DigitsModel2(shape=(96,192,1), weight_file = None):
     dense = Dense(512, activation='relu',name='fc2')(dense)
     dense = Dropout(0.25)(dense)
 
-    digit_1 = Dense(11, activation='softmax', name='digit_1')(dense)
-    digit_2 = Dense(11, activation='softmax', name='digit_2')(dense)
-    digit_3 = Dense(11, activation='softmax', name='digit_3')(dense)
-    digit_4 = Dense(11, activation='softmax', name='digit_4')(dense)
-    digit_5 = Dense(11, activation='softmax', name='digit_5')(dense)
+    digit_1 = Dense(12, activation='softmax', name='digit_1')(dense)
+    digit_2 = Dense(12, activation='softmax', name='digit_2')(dense)
+    digit_3 = Dense(12, activation='softmax', name='digit_3')(dense)
+    digit_4 = Dense(12, activation='softmax', name='digit_4')(dense)
+    digit_5 = Dense(12, activation='softmax', name='digit_5')(dense)
 
     model = Model(input=data,output=[digit_1,digit_2,digit_3,digit_4,digit_5])
 
