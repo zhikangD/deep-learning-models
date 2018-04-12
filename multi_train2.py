@@ -42,13 +42,20 @@ def parse_args(args):
 def DigitsModel2(shape=(128,224,3), weight_file = None):
     data = Input(name='data', shape=shape)
     x = Conv2D(64, (3,3),activation='relu', padding='same', name='conv1')(data)
+    x = Conv2D(64, (3, 3), activation='relu', padding='same', name='conv1_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool1')(x)
     x = Conv2D(128, (3, 3),activation='relu', padding='same', name='conv2')(x)
+    x = Conv2D(128, (3, 3), activation='relu', padding='same', name='conv2_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool2')(x)
     x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3')(x)
+    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool3')(x)
     x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4')(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool4')(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5')(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_2')(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool5')(x)
     x = Dropout(0.25)(x)
     flatten = Flatten()(x)
 
@@ -158,8 +165,8 @@ def main(args=None):
               validation_data=(img_data[split:], test_digits))
     model.save(args.data_dir + 'digits_model_gray_v2.h5')
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
 
-# model = DigitsModel2(shape=(96,192,1))
-# model.summary()
+model = DigitsModel2(shape=(96,192,1))
+model.summary()
