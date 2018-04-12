@@ -1,11 +1,10 @@
 from keras.models import Model
-from keras.layers import Flatten
-from keras.layers import Dense
-from keras.layers import Input
-from keras.layers import Conv2D
+from keras.layers import Flatten,Dense,Input,Conv2D
+from keras.layers import GRU, Reshape
 from keras.layers import MaxPooling2D,BatchNormalization,Convolution2D,Dropout,Activation
 import sys
 from keras import backend as K
+from keras.layers.merge import add, concatenate
 import tensorflow as tf
 from multidigits import DigitsModel
 import pickle
@@ -37,25 +36,19 @@ def parse_args(args):
     parser.add_argument('--data_dir', help='Path to dataset directory.')
     parser.add_argument('--epochs', help='Number of epochs to train.', type=int, default=20)
     parser.add_argument('--batch_size', default=32, type=int)
+    parser.add_argument('--model', default='1')
     return parser.parse_args(args)
 
 def DigitsModel2(shape=(96,192,1), weight_file = None):
     data = Input(name='data', shape=shape)
     x = Conv2D(64, (3,3),activation='relu', padding='same', name='conv1')(data)
-    # x = Conv2D(64, (3, 3), activation='relu', padding='same', name='conv1_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool1')(x)
     x = Conv2D(128, (3, 3),activation='relu', padding='same', name='conv2')(x)
-    # x = Conv2D(128, (3, 3), activation='relu', padding='same', name='conv2_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool2')(x)
     x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3')(x)
-    # x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool3')(x)
     x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4')(x)
-    # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool4')(x)
-    # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5')(x)
-    # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_2')(x)
-    # x = MaxPooling2D((2, 2), strides=(2, 2), name='pool5')(x)
     x = Dropout(0.25)(x)
     flatten = Flatten()(x)
 
@@ -71,6 +64,44 @@ def DigitsModel2(shape=(96,192,1), weight_file = None):
     digit_5 = Dense(12, activation='softmax', name='digit_5')(dense)
 
     model = Model(input=data,output=[digit_1,digit_2,digit_3,digit_4,digit_5])
+
+    return model
+
+def RecurrentModel(shape=(96,192,1), weight_file = None):
+    data = Input(name='data', shape=shape)
+    x = Conv2D(64, (3,3),activation='relu', padding='same', name='conv1')(data)
+    # x = Conv2D(64, (3, 3), activation='relu', padding='same', name='conv1_2')(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool1')(x)
+    x = Conv2D(128, (3, 3),activation='relu', padding='same', name='conv2')(x)
+    # x = Conv2D(128, (3, 3), activation='relu', padding='same', name='conv2_2')(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool2')(x)
+    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3')(x)
+    # x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3_2')(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool3')(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4')(x)
+    # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4_2')(x)
+    x = MaxPooling2D((3, 3), strides=(2, 2), name='pool4')(x)
+    # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5')(x)
+    # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_2')(x)
+    # x = MaxPooling2D((2, 2), strides=(2, 2), name='pool5')(x)
+    x = Dropout(0.25)(x)
+    inner = Reshape(target_shape=(5,11*512), name='reshape')(x)
+    inner = Dense(32, activation='relu', name='dense1')(inner)
+    gru_1 = GRU(512, return_sequences=True, kernel_initializer='he_normal', name='gru1')(inner)
+    gru_1b = GRU(512, return_sequences=True, go_backwards=True, kernel_initializer='he_normal', name='gru1_b')(
+        inner)
+    gru1_merged = add([gru_1, gru_1b])
+    gru_2 = GRU(512, return_sequences=True, kernel_initializer='he_normal', name='gru2')(gru1_merged)
+    gru_2b = GRU(512, return_sequences=True, go_backwards=True, kernel_initializer='he_normal', name='gru2_b')(
+        gru1_merged)
+
+    # transforms RNN output to character activations:
+    inner = Dense(12, kernel_initializer='he_normal',
+                  name='dense2')(concatenate([gru_2, gru_2b]))
+
+
+
+    model = Model(input=data,output=inner)
 
     return model
 
@@ -165,10 +196,15 @@ def main(args=None):
     digits = np.array(digits)
     data_size = img_data.shape[0]
     split = int(data_size*0.8)
-    train_digits = [digits[0][:split], digits[1][:split], digits[2][:split], digits[3][:split], digits[4][:split]]
-    test_digits = [digits[0][split:], digits[1][split:], digits[2][split:], digits[3][split:], digits[4][split:]]
 
-    model = DigitsModel2(shape=(rows,cols,channels))
+    if args.model=='1':
+        model = DigitsModel2(shape=(rows,cols,channels))
+        train_digits = [digits[0][:split], digits[1][:split], digits[2][:split], digits[3][:split], digits[4][:split]]
+        test_digits = [digits[0][split:], digits[1][split:], digits[2][split:], digits[3][split:], digits[4][split:]]
+    elif args.model=='2':
+        model = RecurrentModel(shape=(rows,cols,channels))
+        train_digits=np.stack((digits[0][:split], digits[1][:split], digits[2][:split], digits[3][:split], digits[4][:split]),axis=1)
+        test_digits =np.stack((digits[0][split:], digits[1][split:], digits[2][split:], digits[3][split:], digits[4][split:]),axis=1)
     model.summary()
 
     # Compiling the model
@@ -183,4 +219,5 @@ if __name__ == '__main__':
     main()
 
 # model = DigitsModel2(shape=(96,192,1))
+# model = RecurrentModel(shape=(96,192,1))
 # model.summary()
