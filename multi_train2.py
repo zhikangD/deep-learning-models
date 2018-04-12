@@ -5,6 +5,7 @@ from keras.layers import MaxPooling2D,BatchNormalization,Convolution2D,Dropout,A
 import sys
 from keras import backend as K
 from keras.layers.merge import add, concatenate
+from keras.optimizers import SGD
 import tensorflow as tf
 from multidigits import DigitsModel
 import pickle
@@ -70,21 +71,13 @@ def DigitsModel2(shape=(96,192,1), weight_file = None):
 def RecurrentModel(shape=(96,192,1), weight_file = None):
     data = Input(name='data', shape=shape)
     x = Conv2D(64, (3,3),activation='relu', padding='same', name='conv1')(data)
-    # x = Conv2D(64, (3, 3), activation='relu', padding='same', name='conv1_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool1')(x)
     x = Conv2D(128, (3, 3),activation='relu', padding='same', name='conv2')(x)
-    # x = Conv2D(128, (3, 3), activation='relu', padding='same', name='conv2_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool2')(x)
     x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3')(x)
-    # x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool3')(x)
     x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4')(x)
-    # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4_2')(x)
     x = MaxPooling2D((3, 3), strides=(2, 2), name='pool4')(x)
-    # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5')(x)
-    # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_2')(x)
-    # x = MaxPooling2D((2, 2), strides=(2, 2), name='pool5')(x)
-    # x = Dropout(0.25)(x)
     inner = Reshape(target_shape=(5,11*512), name='reshape')(x)
     inner = Dense(128, activation='relu', name='dense1')(inner)
     gru_1 = GRU(512, return_sequences=True, kernel_initializer='he_normal', name='gru1')(inner)
@@ -98,10 +91,11 @@ def RecurrentModel(shape=(96,192,1), weight_file = None):
     # transforms RNN output to character activations:
     inner = Dense(12, kernel_initializer='he_normal',
                   name='dense2')(concatenate([gru_2, gru_2b]))
+    y_pred = Activation('softmax', name='softmax')(inner)
 
 
 
-    model = Model(input=data,output=inner)
+    model = Model(input=data,output=y_pred)
 
     return model
 
@@ -201,14 +195,22 @@ def main(args=None):
         model = DigitsModel2(shape=(rows,cols,channels))
         train_digits = [digits[0][:split], digits[1][:split], digits[2][:split], digits[3][:split], digits[4][:split]]
         test_digits = [digits[0][split:], digits[1][split:], digits[2][split:], digits[3][split:], digits[4][split:]]
+        model.summary()
+        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     elif args.model=='2':
         model = RecurrentModel(shape=(rows,cols,channels))
         train_digits=np.stack((digits[0][:split], digits[1][:split], digits[2][:split], digits[3][:split], digits[4][:split]),axis=1)
         test_digits =np.stack((digits[0][split:], digits[1][split:], digits[2][split:], digits[3][split:], digits[4][split:]),axis=1)
-    model.summary()
+        model.summary()
 
-    # Compiling the model
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+        # clipnorm seems to speeds up convergence
+        # sgd = SGD(lr=0.02, decay=1e-6, momentum=0.9, nesterov=True, clipnorm=5)
+        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    else:
+        print('model not exist')
+        return
+
 
     # Fitting the model
     model.fit(img_data[:split], train_digits, batch_size=args.batch_size, epochs=args.epochs, verbose=1,
