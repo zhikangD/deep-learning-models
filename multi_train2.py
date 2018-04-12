@@ -25,8 +25,8 @@ def get_cat(s):
         res = np_utils.to_categorical(10, 12)
     elif s.isdigit():
         res = np_utils.to_categorical(int(s), 12)
-    # elif s.lower() in ['x', '-', '*']:
-    #     res = np_utils.to_categorical(11, 12)
+    elif s.lower() in ['x', '-', '*']:
+        res = np_utils.to_categorical(11, 12)
     else:
         res=None
         print('error: no category')
