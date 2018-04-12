@@ -165,8 +165,8 @@ def main(args=None):
               validation_data=(img_data[split:], test_digits))
     model.save(args.data_dir + 'digits_model_gray_v2.h5')
 
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()
 
-model = DigitsModel2(shape=(96,192,1))
-model.summary()
+# model = DigitsModel2(shape=(96,192,1))
+# model.summary()
