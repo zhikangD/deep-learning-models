@@ -116,17 +116,17 @@ def main(args=None):
         x = img.reshape(1, 96, 192, 1)
         img_data_list.append(x)
 
-    # data2 = pickle.load(open(args.data_dir+"data2_df.p", "rb"))
-    # for i in range(data2.shape[0]):
-    #     file = args.data_dir+'bib_test/'+data2['uuids'][i]+'.jpg'
-    #     img = cv2.imread(file)
-    #     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    #     img = cv2.resize(img, (192, 96)).astype('float32')
-    #     img = img / 255
-    #     x = np.expand_dims(img, axis=0)
-    #     x = img.reshape(1, 96, 192, 1)
-    #     img_data_list.append(x)
-    #     labels.append(data2['bibs'][i])
+    data2 = pickle.load(open(args.data_dir+"data2_df.p", "rb"))
+    for i in range(data2.shape[0]):
+        file = args.data_dir+'bib_test/'+data2['uuids'][i]+'.jpg'
+        img = cv2.imread(file)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.resize(img, (192, 96)).astype('float32')
+        img = img / 255
+        x = np.expand_dims(img, axis=0)
+        x = img.reshape(1, 96, 192, 1)
+        img_data_list.append(x)
+        labels.append(data2['bibs'][i])
     img_data = np.array(img_data_list)
     img_data = np.rollaxis(img_data, 1, 0)
     img_data = img_data[0]
