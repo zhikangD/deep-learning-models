@@ -84,8 +84,8 @@ def RecurrentModel(shape=(96,192,1), weight_file = None):
     gru_1b = GRU(512, return_sequences=True, go_backwards=True, kernel_initializer='he_normal', name='gru1_b')(
         inner)
     gru1_merged = add([gru_1, gru_1b])
-    gru_2 = GRU(512, return_sequences=True, kernel_initializer='he_normal', name='gru2')(gru1_merged)
-    gru_2b = GRU(512, return_sequences=True, go_backwards=True, kernel_initializer='he_normal', name='gru2_b')(
+    gru_2 = GRU(512, return_sequences=True, kernel_initializer='he_normal',dropout=0.2, name='gru2')(gru1_merged)
+    gru_2b = GRU(512, return_sequences=True, go_backwards=True, kernel_initializer='he_normal',dropout=0.2, name='gru2_b')(
         gru1_merged)
 
     # transforms RNN output to character activations:
@@ -157,7 +157,7 @@ def main(args=None):
     img_data = img_data[0]
     img_data, labels = shuffle(img_data, labels, random_state=2)
 
-    print(labels)
+
 
 
     rows=img_data.shape[1]
