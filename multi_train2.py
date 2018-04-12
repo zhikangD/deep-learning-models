@@ -52,8 +52,10 @@ def DigitsModel2(shape=(128,224,3), weight_file = None):
     x = Dropout(0.25)(x)
     flatten = Flatten()(x)
 
-    dense = Dense(256, activation='relu')(flatten)
-    dense = Dropout(0.5)(dense)
+    dense = Dense(512, activation='relu',name='fc1')(flatten)
+    dense = Dropout(0.25)(dense)
+    dense = Dense(512, activation='relu',name='fc2')(dense)
+    dense = Dropout(0.25)(dense)
 
     digit_1 = Dense(11, activation='softmax', name='digit_1')(dense)
     digit_2 = Dense(11, activation='softmax', name='digit_2')(dense)
@@ -154,7 +156,7 @@ def main(args=None):
     # Fitting the model
     model.fit(img_data[:split], train_digits, batch_size=args.batch_size, epochs=args.epochs, verbose=1,
               validation_data=(img_data[split:], test_digits))
-    model.save(args.data_dir + 'digits_model_gray_v1.h5')
+    model.save(args.data_dir + 'digits_model_gray_v2.h5')
 
 if __name__ == '__main__':
     main()
