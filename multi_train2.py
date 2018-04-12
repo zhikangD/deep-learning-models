@@ -22,11 +22,11 @@ def get_session():
     return tf.Session(config=config)
 def get_cat(s):
     if s is None:
-        res = np_utils.to_categorical(10, 11)
+        res = np_utils.to_categorical(10, 12)
     elif s.isdigit():
-        res = np_utils.to_categorical(int(s), 11)
-    # elif s.lower() in ['x', '-', '*']:
-    #     res = np_utils.to_categorical(11, 12)
+        res = np_utils.to_categorical(int(s), 12)
+    elif s.lower() in ['x', '-', '*']:
+        res = np_utils.to_categorical(11, 12)
     else:
         res=None
         print('error: no category')
@@ -53,9 +53,9 @@ def DigitsModel2(shape=(96,192,1), weight_file = None):
     x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4')(x)
     # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4_2')(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool4')(x)
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5')(x)
+    # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5')(x)
     # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_2')(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool5')(x)
+    # x = MaxPooling2D((2, 2), strides=(2, 2), name='pool5')(x)
     x = Dropout(0.25)(x)
     flatten = Flatten()(x)
 
@@ -115,6 +115,8 @@ def main(args=None):
         x = np.expand_dims(img, axis=0)
         x = img.reshape(1, 96, 192, 1)
         img_data_list.append(x)
+
+    # data2 = pickle.load(open(args.data_dir+"data2_df.p", "rb"))
     img_data = np.array(img_data_list)
     img_data = np.rollaxis(img_data, 1, 0)
     img_data = img_data[0]
