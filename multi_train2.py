@@ -84,9 +84,9 @@ def RecurrentModel(shape=(96,192,1), weight_file = None):
     # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5')(x)
     # x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_2')(x)
     # x = MaxPooling2D((2, 2), strides=(2, 2), name='pool5')(x)
-    x = Dropout(0.25)(x)
+    # x = Dropout(0.25)(x)
     inner = Reshape(target_shape=(5,11*512), name='reshape')(x)
-    inner = Dense(32, activation='relu', name='dense1')(inner)
+    inner = Dense(128, activation='relu', name='dense1')(inner)
     gru_1 = GRU(512, return_sequences=True, kernel_initializer='he_normal', name='gru1')(inner)
     gru_1b = GRU(512, return_sequences=True, go_backwards=True, kernel_initializer='he_normal', name='gru1_b')(
         inner)
