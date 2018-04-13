@@ -143,29 +143,29 @@ def main(args=None):
 
     labels = []
     img_data_list = []
-    filedir = args.data_dir+'renders_v3_rand/'
-    files = os.listdir(filedir)
-    for filename in files:
-        labels.append(filename[7:11])
-        img = cv2.imread(filedir + filename)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img = cv2.resize(img, (192, 96)).astype('float32')
-        img = img / 255
-        x = np.expand_dims(img, axis=0)
-        x = img.reshape(1, 96, 192, 1)
-        img_data_list.append(x)
+    # filedir = args.data_dir+'renders_v3_rand/'
+    # files = os.listdir(filedir)
+    # for filename in files:
+    #     labels.append(filename[7:11])
+    #     img = cv2.imread(filedir + filename)
+    #     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #     img = cv2.resize(img, (192, 96)).astype('float32')
+    #     img = img / 255
+    #     x = np.expand_dims(img, axis=0)
+    #     x = img.reshape(1, 96, 192, 1)
+    #     img_data_list.append(x)
 
-    filedir = args.data_dir+'three_digit_renders/'
-    files = os.listdir(filedir)
-    for filename in files:
-        labels.append(filename[7:10])
-        img = cv2.imread(filedir + filename)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img = cv2.resize(img, (192, 96)).astype('float32')
-        img = img / 255
-        x = np.expand_dims(img, axis=0)
-        x = img.reshape(1, 96, 192, 1)
-        img_data_list.append(x)
+    # filedir = args.data_dir+'three_digit_renders/'
+    # files = os.listdir(filedir)
+    # for filename in files:
+    #     labels.append(filename[7:10])
+    #     img = cv2.imread(filedir + filename)
+    #     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #     img = cv2.resize(img, (192, 96)).astype('float32')
+    #     img = img / 255
+    #     x = np.expand_dims(img, axis=0)
+    #     x = img.reshape(1, 96, 192, 1)
+    #     img_data_list.append(x)
 
     data2 = pickle.load(open(args.data_dir+"data2_df.p", "rb"))
     for i in range(data2.shape[0]):
