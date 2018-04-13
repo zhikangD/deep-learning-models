@@ -48,7 +48,7 @@ def DigitsModel(weight_file = None):
     # locnet.add(Activation('relu'))
     # locnet.add(Dense(6))
     data = Input(name='data', shape=(128, 224, 3))
-    # x = SpatialTransformer(localization_net=locnet,
+    # tans = SpatialTransformer(localization_net=locnet,
     #                              output_size=(128, 224), input_shape=input_shape)(data)
     x = Conv2D(48, (5, 5), activation='relu', padding='same', name='conv1')(data)
     x = BatchNormalization()(x)
