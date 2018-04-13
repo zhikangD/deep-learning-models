@@ -15,8 +15,8 @@ from keras.utils import np_utils
 from sklearn.utils import shuffle
 import os
 import cv2
-from Generator import DigitImageGenerator
-from spatial_transformer import SpatialTransformer
+# from Generator import DigitImageGenerator
+# from spatial_transformer import SpatialTransformer
 
 def get_session():
     config = tf.ConfigProto()
