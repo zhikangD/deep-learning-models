@@ -251,6 +251,12 @@ def main(args=None):
         hist = custom_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
                                     validation_data=(X_test, y_test),
                                     callbacks=callbacks_list)
+        x, y = shuffle(img_data, Y, random_state=2)
+        # Split the dataset
+        X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
+        hist = custom_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
+                                    validation_data=(X_test, y_test),
+                                    callbacks=callbacks_list)
         # Y = np_utils.to_categorical(labels, num_classes)
         # hist = custom_model.fit_generator(datagen.flow(img_data, Y, batch_size=32),callbacks=callbacks_list,
         #                 steps_per_epoch=1000, epochs=50)
