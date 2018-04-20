@@ -26,7 +26,7 @@ def parse_args(args):
     parser.add_argument('--data_dir', default=None, help='Path to dataset directory.')
     parser.add_argument('--epochs', help='Number of epochs to train.', type=int, default=20)
     parser.add_argument('--usepkldata',action='store_true', help='use data from saved pickle file or create from image.')
-    parser.add_argument('--input_size', default=128,help='size of image', type=int)
+    parser.add_argument('--input_size', default=96,help='size of image', type=int)
     parser.add_argument('--model', default='cnn')
     return parser.parse_args(args)
 
@@ -91,7 +91,7 @@ def main(args=None):
     img_data_list = []
     img_data_list = []
     if args.usepkldata == False:
-        with open('./data/img_list.pkl', 'rb') as pk:
+        with open('./data/imglist96.pkl', 'rb') as pk:
             img_list = _pickle.load(pk)
             img_list = img_list[0:8000] + img_list[18000:20000]
         for img in img_list:
@@ -120,7 +120,7 @@ def main(args=None):
 
     num_classes = 2
     num_of_samples = img_data.shape[0]
-    with open('./data/focus.pkl', 'rb') as pk:
+    with open('./data/focus96.pkl', 'rb') as pk:
         labels = _pickle.load(pk)
     labels = labels[0:8000] + labels[18000:20000]
 
