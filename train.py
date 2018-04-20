@@ -91,7 +91,7 @@ def main(args=None):
             img_list = _pickle.load(pk)
         print(len(img_list))
         # if args.model=='resnet_tuning':
-        img_list=img_list[0:10000]
+        img_list=img_list[0:8000]+img_list[18000:20000]
         print(len(img_list))
         for img in img_list:
             # img_path = data_path + '/' + dataset + '/' + img
@@ -127,7 +127,7 @@ def main(args=None):
             labels = _pickle.load(pk)
 
     # if args.model=='resnet_tuning':
-    labels=labels[0:10000]
+    labels=labels[0:8000]+labels[18000:20000]
 
 
     names = ['bad', 'good']
@@ -249,8 +249,7 @@ def main(args=None):
         t = time.time()
         #	t = now()
         hist = custom_model.fit(X_train, y_train, batch_size=32, epochs=args.epochs, verbose=1,
-                                    validation_data=(X_test, y_test),
-                                    callbacks=callbacks_list)
+                                    validation_data=(X_test, y_test))
         x, y = shuffle(img_data, Y, random_state=2)
         # Split the dataset
         X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)

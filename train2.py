@@ -93,6 +93,7 @@ def main(args=None):
     if args.usepkldata == False:
         with open('./data/img_list.pkl', 'rb') as pk:
             img_list = _pickle.load(pk)
+            img_list = img_list[0:8000] + img_list[18000:20000]
         for img in img_list:
             # img_path = data_path + '/' + dataset + '/' + img
             img_path = args.data_dir + '/' + img + '.jpg'
@@ -102,6 +103,7 @@ def main(args=None):
             x = preprocess_input(x)
             print('Input image shape:', x.shape)
             img_data_list.append(x)
+
         img_data = np.array(img_data_list)
         # img_data = img_data.astype('float32')
         print(img_data.shape)
@@ -120,6 +122,7 @@ def main(args=None):
     num_of_samples = img_data.shape[0]
     with open('./data/focus.pkl', 'rb') as pk:
         labels = _pickle.load(pk)
+    labels = labels[0:8000] + labels[18000:20000]
 
     names = ['bad', 'good']
     # convert class labels to on-hot encoding
