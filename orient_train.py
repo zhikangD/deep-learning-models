@@ -63,7 +63,7 @@ def main(args=None):
     # Split the dataset
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
     if args.finetuning== True:
-        custom_model= load_model('/home/ubuntu/zk/orientation.h5')
+        custom_model= load_model('/home/ubuntu/zk/orientation/orientation.h5')
     else:
         image_input = Input(shape=(224, 224, 3))
         model = ResNet50(input_tensor=image_input, weights='imagenet')
