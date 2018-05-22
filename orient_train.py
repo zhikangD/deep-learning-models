@@ -18,13 +18,15 @@ from sklearn.utils import shuffle
 from sklearn.cross_validation import train_test_split
 from blurMapping import KitModel
 from keras import backend as K
+from keras.models import load_model
 import tensorflow as tf
 
-# def parse_args(args):
-#     parser = argparse.ArgumentParser(description='training script')
-#     # parser.add_argument('--data_dir', help='Path to dataset directory.')
-#     parser.add_argument('--epochs', help='Number of epochs to train.', type=int, default=50)
-#     return parser.parse_args(args)
+def parse_args(args):
+    parser = argparse.ArgumentParser(description='training script')
+    # parser.add_argument('--data_dir', help='Path to dataset directory.')
+    parser.add_argument('--epochs', help='Number of epochs to train.', type=int, default=50)
+    parser.add_argument('--finetuning', action='store_true')
+    return parser.parse_args(args)
 
 def get_session():
     config = tf.ConfigProto()
@@ -32,6 +34,10 @@ def get_session():
     return tf.Session(config=config)
 
 def main(args=None):
+
+    if args is None:
+        args = sys.argv[1:]
+    args = parse_args(args)
 
 
     K.tensorflow_backend.set_session(get_session())
@@ -42,19 +48,21 @@ def main(args=None):
     x, y = shuffle(np.array(faceimg), angles, random_state=2)
     # Split the dataset
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
-
-    image_input = Input(shape=(224, 224, 3))
-    model = ResNet50(input_tensor=image_input, weights='imagenet')
-    x = model.get_layer('flatten_1').output
-    out = Dense(1, name='output')(x)
-    custom_model = Model(inputs=image_input, outputs=out)
+    if args.finetuning== True:
+        custom_model= load_model('/home/ubuntu/zk/orientation.h5')
+    else:
+        image_input = Input(shape=(224, 224, 3))
+        model = ResNet50(input_tensor=image_input, weights='imagenet')
+        x = model.get_layer('flatten_1').output
+        out = Dense(1, name='output')(x)
+        custom_model = Model(inputs=image_input, outputs=out)
     custom_model.summary()
     custom_model.compile(loss='mse', optimizer='adam', metrics=["accuracy"])
     custom_model.fit(np.array(X_train), np.array(y_train), nb_epoch=50, batch_size=2, verbose=1)
     predicted = model.predict(np.array(X_test))
 
     custom_model.save('/home/ubuntu/zk/orientation.h5')
-    print(np.array(predicted)-np.array(y_test))
+    print(np.array(predicted).reshape(len(y_test),)-np.array(y_test))
 
 if __name__ == '__main__':
     main()
