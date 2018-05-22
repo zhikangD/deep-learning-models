@@ -77,10 +77,26 @@ def cnnmodel(size):
     model.add(Dense(128))
     model.add(Activation('relu'))
     model.add(Dropout(0.25))
+
     model.add(Dense(nb_classes))
     sgd = SGD(lr=0.1)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     return model
+
+def model3(shape):
+    data = Input(name='data', shape=shape)
+    x = Conv2D(96, (5, 5), activation='relu', padding='same', name='conv1')(data)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool1')(x)
+    x = Conv2D(256, (5, 5), activation='relu', padding='same', name='conv2')(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool2')(x)
+    x = Conv2D(384, (3, 3), activation='relu', padding='same', name='conv3')(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool3')(x)
+    # x = Dropout(0.25)(x)
+    flatten = Flatten()(x)
+    dense = Dense(2048, activation='relu',name='fc1')(flatten)
+    # dense = Dropout(0.25)(dense)
+    dense = Dense(2048, activation='relu',name='fc2')(dense)
+    # dense = Dropout(0.25)(dense)
 
 def main(args=None):
     # parse arguments
