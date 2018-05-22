@@ -62,6 +62,8 @@ for uuid in assets:
             facelist.append(faceid)
             rotate=randint(-45,45)
             rotateimg=rotate_bound(faceimg,rotate)
+            cv2.imwrite('/home/ubuntu/zk/orientation/faceimg/' + faceid + 'rt.jpg',
+                        cv2.cvtColor(rotateimg, cv2.COLOR_RGB2BGR))
             angle2=angle+rotate
             if angle2<0:
                 angle2+=360
