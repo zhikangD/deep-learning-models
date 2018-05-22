@@ -23,7 +23,7 @@ import tensorflow as tf
 
 def parse_args(args):
     parser = argparse.ArgumentParser(description='training script')
-    # parser.add_argument('--data_dir', help='Path to dataset directory.')
+    parser.add_argument('--data_dir',default='/home/ubuntu/zk/orientation/faceimg/', help='Path to dataset directory.')
     parser.add_argument('--epochs', help='Number of epochs to train.', type=int, default=50)
     parser.add_argument('--finetuning', action='store_true')
     return parser.parse_args(args)
@@ -41,11 +41,25 @@ def main(args=None):
 
 
     K.tensorflow_backend.set_session(get_session())
-    with open('/home/ubuntu/zk/faceimg.pkl', 'rb') as pk:
-        faceimg = _pickle.load(pk)
+    with open('/home/ubuntu/zk/facelist.pkl', 'rb') as pk:
+        facelist = _pickle.load(pk)
     with open('/home/ubuntu/zk/angles.pkl', 'rb') as pk:
         angles = _pickle.load(pk)
-    x, y = shuffle(np.array(faceimg), angles, random_state=2)
+    t_size=224
+    img_data_list = []
+    for img in facelist:
+        img_path = args.data_dir + img + '.jpg'
+        img = image.load_img(img_path, target_size=(t_size, t_size))
+        x = image.img_to_array(img)
+        x = np.expand_dims(x, axis=0)
+        img_data_list.append(x)
+    img_data = np.array(img_data_list)
+    print(img_data.shape)
+    img_data = np.rollaxis(img_data, 1, 0)
+    print(img_data.shape)
+    img_data = img_data[0]
+    print(img_data.shape)
+    x, y = shuffle(img_data, angles, random_state=2)
     # Split the dataset
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
     if args.finetuning== True:
@@ -58,10 +72,10 @@ def main(args=None):
         custom_model = Model(inputs=image_input, outputs=out)
     custom_model.summary()
     custom_model.compile(loss='mse', optimizer='adam', metrics=["accuracy"])
-    custom_model.fit(np.array(X_train), np.array(y_train), nb_epoch=50, batch_size=2, verbose=1)
-    predicted = model.predict(np.array(X_test))
+    custom_model.fit(np.array(X_train), np.array(y_train), nb_epoch=100, batch_size=2, verbose=1)
+    predicted = custom_model.predict(np.array(X_test))
 
-    custom_model.save('/home/ubuntu/zk/orientation.h5')
+    custom_model.save('/home/ubuntu/zk/orientation/orientation_1.h5')
     print(np.array(predicted).reshape(len(y_test),)-np.array(y_test))
 
 if __name__ == '__main__':
