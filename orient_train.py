@@ -59,7 +59,7 @@ def main(args=None):
     print(img_data.shape)
     img_data = img_data[0]
     print(img_data.shape)
-    x, y = shuffle(img_data, angles, random_state=2)
+    x, y = shuffle(img_data, np.array(angles)/180, random_state=2)
     # Split the dataset
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
     if args.finetuning== True:
@@ -72,7 +72,7 @@ def main(args=None):
         custom_model = Model(inputs=image_input, outputs=out)
     custom_model.summary()
     custom_model.compile(loss='mse', optimizer='adam', metrics=["accuracy"])
-    custom_model.fit(np.array(X_train), np.array(y_train), nb_epoch=100, batch_size=2, verbose=1)
+    custom_model.fit(np.array(X_train), np.array(y_train), epochs=100, batch_size=2, verbose=1)
     predicted = custom_model.predict(np.array(X_test))
 
     custom_model.save('/home/ubuntu/zk/orientation/orientation_1.h5')
