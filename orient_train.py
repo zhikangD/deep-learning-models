@@ -37,7 +37,7 @@ def main(args=None):
     K.tensorflow_backend.set_session(get_session())
     with open('/home/ubuntu/zk/faceimg.pkl', 'rb') as pk:
         faceimg = _pickle.load(pk)
-    with open('/home/ubuntu/angles.pkl', 'rb') as pk:
+    with open('/home/ubuntu/zk/angles.pkl', 'rb') as pk:
         angles = _pickle.load(pk)
     x, y = shuffle(np.array(faceimg), angles, random_state=2)
     # Split the dataset
