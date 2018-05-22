@@ -41,9 +41,9 @@ def main(args=None):
 
 
     K.tensorflow_backend.set_session(get_session())
-    with open('/home/ubuntu/zk/facelist.pkl', 'rb') as pk:
+    with open('/home/ubuntu/zk/orientation/facelist.pkl', 'rb') as pk:
         facelist = _pickle.load(pk)
-    with open('/home/ubuntu/zk/angles.pkl', 'rb') as pk:
+    with open('/home/ubuntu/zk/orientation/angles.pkl', 'rb') as pk:
         angles = _pickle.load(pk)
     t_size=224
     img_data_list = []
