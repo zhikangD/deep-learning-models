@@ -50,8 +50,8 @@ def main(args=None):
     custom_model = Model(inputs=image_input, outputs=out)
     custom_model.summary()
     custom_model.compile(loss='mse', optimizer='adam', metrics=["accuracy"])
-    custom_model.fit(X_train, y_train, nb_epoch=50, batch_size=2, verbose=1)
-    predicted = model.predict(X_test)
+    custom_model.fit(np.array(X_train), np.array(y_train), nb_epoch=50, batch_size=2, verbose=1)
+    predicted = model.predict(np.array(X_test))
 
     custom_model.save('/home/ubuntu/zk/orientation.h5')
     print(np.array(predicted)-np.array(y_test))
