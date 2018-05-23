@@ -72,7 +72,7 @@ for uuid in assets:
             i+=1
             if i%20==0:
                 print('processed ', i, ' faces')
-    if i>3000:
+    if i>3500:
         break
 
 
