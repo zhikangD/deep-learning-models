@@ -25,6 +25,7 @@ def parse_args(args):
     parser = argparse.ArgumentParser(description='training script')
     parser.add_argument('--data_dir',default='/home/ubuntu/zk/orientation/faceimg/', help='Path to dataset directory.')
     parser.add_argument('--epochs', help='Number of epochs to train.', type=int, default=50)
+    parser.add_argument('--batch_size', default=32, type=int)
     parser.add_argument('--finetuning', action='store_true')
     return parser.parse_args(args)
 
@@ -76,7 +77,7 @@ def main(args=None):
     filepath='/home/ubuntu/zk/orientation/orient-{epoch:02d}.h5'
     checkpoint = ModelCheckpoint(filepath,verbose=1, save_best_only=False,period=1)
     callbacks_list = [checkpoint]
-    custom_model.fit(X_train, y_train, epochs=args.epochs, batch_size=2, verbose=1,
+    custom_model.fit(X_train, y_train, epochs=args.epochs, batch_size=args.batch_size, verbose=1,
                      validation_data=(X_test, y_test),callbacks=callbacks_list)
 
 
