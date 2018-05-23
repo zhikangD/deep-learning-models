@@ -63,7 +63,7 @@ def main(args=None):
     # Split the dataset
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
     if args.finetuning== True:
-        custom_model= load_model('/home/ubuntu/zk/orientation/orientation.h5')
+        custom_model= load_model('/home/ubuntu/zk/orientation/orient-06.h5')
     else:
         image_input = Input(shape=(224, 224, 3))
         model = ResNet50(input_tensor=image_input, weights='imagenet')
@@ -74,9 +74,9 @@ def main(args=None):
     custom_model.summary()
     custom_model.compile(loss='mse', optimizer='adam', metrics=["accuracy"])
     filepath='/home/ubuntu/zk/orientation/orient-{epoch:02d}.h5'
-    checkpoint = ModelCheckpoint(filepath,verbose=1, save_best_only=False)
+    checkpoint = ModelCheckpoint(filepath,verbose=1, save_best_only=False,period=2)
     callbacks_list = [checkpoint]
-    custom_model.fit(np.array(X_train), np.array(y_train), epochs=80, batch_size=2, verbose=1,
+    custom_model.fit(np.array(X_train), np.array(y_train), epochs=args.epochs, batch_size=2, verbose=1,
                      validation_data=(np.array(X_test), np.array(y_test)),callbacks=callbacks_list)
 
 
