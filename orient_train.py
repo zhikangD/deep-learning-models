@@ -70,13 +70,15 @@ def main(args=None):
         x = model.get_layer('flatten_1').output
         out = Dense(1, name='output')(x)
         custom_model = Model(inputs=image_input, outputs=out)
+
     custom_model.summary()
     custom_model.compile(loss='mse', optimizer='adam', metrics=["accuracy"])
-    custom_model.fit(np.array(X_train), np.array(y_train), epochs=80, batch_size=2, verbose=1)
-    predicted = custom_model.predict(np.array(X_test))
+    filepath='/home/ubuntu/zk/orientation/orient-{epoch:02d}.h5'
+    checkpoint = ModelCheckpoint(filepath,verbose=1, save_best_only=False)
+    callbacks_list = [checkpoint]
+    custom_model.fit(np.array(X_train), np.array(y_train), epochs=80, batch_size=2, verbose=1,
+                     validation_data=(np.array(X_test), np.array(y_test)),callbacks=callbacks_list)
 
-    custom_model.save('/home/ubuntu/zk/orientation/orientation_1.h5')
-    print(np.array(predicted).reshape(len(y_test),)-np.array(y_test))
 
 if __name__ == '__main__':
     main()
