@@ -72,7 +72,7 @@ def main(args=None):
         custom_model = Model(inputs=image_input, outputs=out)
     custom_model.summary()
     custom_model.compile(loss='mse', optimizer='adam', metrics=["accuracy"])
-    custom_model.fit(np.array(X_train), np.array(y_train), epochs=100, batch_size=2, verbose=1)
+    custom_model.fit(np.array(X_train), np.array(y_train), epochs=80, batch_size=2, verbose=1)
     predicted = custom_model.predict(np.array(X_test))
 
     custom_model.save('/home/ubuntu/zk/orientation/orientation_1.h5')
