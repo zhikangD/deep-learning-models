@@ -76,7 +76,7 @@ def main(args=None):
     filepath='/home/ubuntu/zk/orientation/orient-{epoch:02d}.h5'
     checkpoint = ModelCheckpoint(filepath,verbose=1, save_best_only=False,period=2)
     callbacks_list = [checkpoint]
-    custom_model.fit(np.array(X_train), np.array(y_train), epochs=args.epochs, batch_size=2, verbose=1,
+    custom_model.fit(np.array(X_train), np.array(y_train), epochs=args.epochs, batch_size=1, verbose=1,
                      validation_data=(np.array(X_test), np.array(y_test)),callbacks=callbacks_list)
 
 
