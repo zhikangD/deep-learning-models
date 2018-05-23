@@ -75,7 +75,7 @@ def main(args=None):
     custom_model.summary()
     custom_model.compile(loss='mse', optimizer='adam', metrics=["accuracy"])
     filepath='/home/ubuntu/zk/orientation/orient-{epoch:02d}.h5'
-    checkpoint = ModelCheckpoint(filepath,verbose=1, save_best_only=False,period=1)
+    checkpoint = ModelCheckpoint(filepath,verbose=1, save_best_only=False,period=2)
     callbacks_list = [checkpoint]
     custom_model.fit(X_train, y_train, epochs=args.epochs, batch_size=args.batch_size, verbose=1,
                      validation_data=(X_test, y_test),callbacks=callbacks_list)

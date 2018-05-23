@@ -58,21 +58,27 @@ for uuid in assets:
             bottom=curation['orientationVector']['bottom']
             top=curation['orientationVector']['top']
             angle = np.rad2deg(np.arctan2(bottom['y']-top['y'], bottom['x']-top['x']))
+            if 0<angle<270:
+                angle=angle-90
+            else:
+                angle=angle-450
             angles.append(angle)
             facelist.append(faceid)
-            rotate=randint(-45,45)
+            rotate=randint(-60,60)
             rotateimg=rotate_bound(faceimg,rotate)
             cv2.imwrite('/home/ubuntu/zk/orientation/faceimg/' + faceid + 'rt.jpg',
                         cv2.cvtColor(rotateimg, cv2.COLOR_RGB2BGR))
             angle2=angle+rotate
-            if angle2<0:
+            if angle2<-180:
                 angle2+=360
+            elif angle2>180:
+                angle2-=360
             facelist.append(faceid+'rt')
             angles.append(angle2)
             i+=1
             if i%20==0:
                 print('processed ', i, ' faces')
-    if i>3500:
+    if i>4000:
         break
 
 
@@ -80,3 +86,4 @@ with open ('/home/ubuntu/zk/orientation/facelist.pkl','wb') as pk:
     _pickle.dump(facelist, pk)
 with open ('/home/ubuntu/zk/orientation/angles.pkl','wb') as pk:
     _pickle.dump(angles, pk)
+print(np.max(angles), np.min(angles))
