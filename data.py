@@ -68,7 +68,7 @@ for uuid in assets:
             rotateimg=rotate_bound(faceimg,rotate)
             cv2.imwrite('/home/ubuntu/zk/orientation/faceimg/' + faceid + 'rt.jpg',
                         cv2.cvtColor(rotateimg, cv2.COLOR_RGB2BGR))
-            angle2=angle+rotate
+            angle2=angle-rotate
             if angle2<-180:
                 angle2+=360
             elif angle2>180:
