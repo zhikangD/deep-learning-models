@@ -64,6 +64,20 @@ for uuid in assets:
                 angle=angle-450
             angles.append(angle)
             facelist.append(faceid)
+            if i%2==1:
+                hface=rotate_bound(faceimg,90)
+                angle1=angle-90
+            else:
+                hface=rotate_bound(faceimg,-90)
+                angle1=angle+90
+            if angle1<-180:
+                angle1+=360
+            elif angle1>180:
+                angle1-=360
+            cv2.imwrite('/home/ubuntu/zk/orientation/faceimg/' + faceid + 'rt90.jpg',
+                        cv2.cvtColor(hface, cv2.COLOR_RGB2BGR))
+            angles.append(angle1)
+            facelist.append(faceid+'rt90')
             rotate=randint(-60,60)
             rotateimg=rotate_bound(faceimg,rotate)
             cv2.imwrite('/home/ubuntu/zk/orientation/faceimg/' + faceid + 'rt.jpg',
@@ -78,7 +92,7 @@ for uuid in assets:
             i+=1
             if i%20==0:
                 print('processed ', i, ' faces')
-    if i>4000:
+    if i>4500:
         break
 
 
